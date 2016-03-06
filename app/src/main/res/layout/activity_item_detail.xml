@@ -6,7 +6,6 @@
     android:fitsSystemWindows="true"
     tools:context="com.example.wduello.collectionsmanager.ItemDetailActivity"
     tools:ignore="MergeRootFrame">
-    <?xml version="1.0" encoding="utf-8"?>
 
     <android.support.design.widget.AppBarLayout
 
