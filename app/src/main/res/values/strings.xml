@@ -1,4 +1,7 @@
 <resources>
     <string name="app_name">CollectionsManager</string>
     <string name="title_item_detail">Item Detail</string>
+    <string name="item_name_edit_text">Item Name</string>
+    <string name="item_name">Item Name</string>
+
 </resources>
