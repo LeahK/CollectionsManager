@@ -19,6 +19,8 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.util.Log;
+import android.content.ComponentName;
 
 import java.util.ArrayList;
 
@@ -32,6 +34,15 @@ import java.util.ArrayList;
 
 public class ItemDetailActivity extends AppCompatActivity {
 
+    //Static values
+    private static final String TAG = "ItemDetail";
+    private static final String FILENAME = "items.json";
+
+    //Objects for saving
+    private Item mItem;
+    private CollectionsManagerJSONSerializer mSerializer;
+
+    //Widgets
     private TextView mItemName;
     private LinearLayout mItemAttributesView;
     private Button mSaveButton;
@@ -39,6 +50,7 @@ public class ItemDetailActivity extends AppCompatActivity {
     private ImageButton mCameraButton;
     private boolean mEditMode;
 
+    //Hard coded attributes, will be deleted eventually
     private ArrayList<Attribute> mAttributes;
     private Attribute mAttribute1;
     private Attribute mAttribute2;
@@ -94,6 +106,17 @@ public class ItemDetailActivity extends AppCompatActivity {
         }
     }
 
+    public boolean saveItem() {
+        try {
+            mSerializer.saveItem(mItem);
+            Log.d(TAG, "item saved to file");
+            return true;
+        } catch (Exception e) {
+            Log.e(TAG, "Error saving item: ", e);
+            return false;
+        }
+    }
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -137,7 +160,9 @@ public class ItemDetailActivity extends AppCompatActivity {
         navigationView.setNavigationItemSelectedListener(this); */
 
         generateAttributes();
-        Item item = new Item("Item 1", 1);
+        Item item = new Item();
+        item.setName("Item 1");
+        item.setCollectionId(0);
         item.setAttributes(mAttributes);
         mItemAttributesView = (LinearLayout)findViewById(R.id.item_attributes);
         int i;
@@ -153,6 +178,14 @@ public class ItemDetailActivity extends AppCompatActivity {
         mCameraButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 capturePhoto();
+            }
+        });
+
+        mSerializer = new CollectionsManagerJSONSerializer(ItemDetailActivity.this, FILENAME);
+        mSaveButton = (Button) findViewById(R.id.save_button);
+        mSaveButton.setOnClickListener(new View.OnClickListener(){
+            public void onClick(View v) {
+                //Save Items
             }
         });
 
@@ -200,5 +233,12 @@ public class ItemDetailActivity extends AppCompatActivity {
                 //Save photo
             }
         }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        Log.d(TAG, "onPause() called");
+        //Save item
     }
 }
