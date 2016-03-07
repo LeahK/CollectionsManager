@@ -2,14 +2,25 @@ package com.example.wduello.collectionsmanager;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
+import android.view.Gravity;
 import android.view.View;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.ActionBar;
 import android.support.v4.app.NavUtils;
 import android.view.MenuItem;
+import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+
+import java.util.ArrayList;
 
 /**
  * An activity representing a single Item detail screen. This
@@ -17,39 +28,80 @@ import android.view.MenuItem;
  * item details are presented side-by-side with a list of items
  * in a {@link ItemListActivity}.
  */
+
+
 public class ItemDetailActivity extends AppCompatActivity {
+
+    private TextView mItemName;
+    private LinearLayout mItemAttributesView;
+    private Button mSaveButton;
+    private Button mCancelButton;
+    private ImageButton mCameraButton;
+    private boolean mEditMode;
+
+    private ArrayList<Attribute> mAttributes;
+    private Attribute mAttribute1;
+    private Attribute mAttribute2;
+    private Attribute mAttribute3;
+
+    private static int TAKE_PHOTO = 1;
+
+    //This is for testing, will eventually be deleted
+    private void generateAttributes() {
+        mAttribute1 = new Attribute("Date", "Date purchased", "");
+        mAttribute2 = new Attribute("Color", "Color", "");
+        mAttribute3 = new Attribute("Price", "Purchase price", "");
+        mAttributes = new ArrayList<>();
+        mAttributes.add(mAttribute1);
+        mAttributes.add(mAttribute2);
+        mAttributes.add(mAttribute3);
+
+    }
+
+    private void generateAttributeTextView(LinearLayout parent, int id, String name, String value) {
+        //Create linear layout for attribute
+        LinearLayout newAttribute = new LinearLayout(this);
+        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        LinearLayout.LayoutParams textViewParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT, 1f);
+        newAttribute.setLayoutParams(layoutParams);
+        newAttribute.setId(id);
+        newAttribute.setOrientation(LinearLayout.HORIZONTAL);
+        newAttribute.setGravity(Gravity.LEFT);
+
+        //Create text view for attribute name
+        TextView attributeName = new TextView(this);
+        attributeName.setLayoutParams(textViewParams);
+        attributeName.setText(name + ":");
+        attributeName.setPadding(0, 10, 100, 10);
+
+        //Create text view for attribute value
+        TextView attributeValue = new TextView(this);
+        attributeValue.setLayoutParams(textViewParams);
+        attributeValue.setText(value);
+        attributeValue.setPadding(0, 10, 100, 10);
+
+        //Add new attribute to parent
+        parent.addView(newAttribute);
+        //Add name and value to attribute
+        newAttribute.addView(attributeName);
+        newAttribute.addView(attributeValue);
+    }
+
+    public void capturePhoto() {
+        Intent cameraIntent = new Intent(MediaStore.INTENT_ACTION_STILL_IMAGE_CAMERA);
+        if (cameraIntent.resolveActivity(getPackageManager()) != null) {
+            startActivityForResult(cameraIntent, TAKE_PHOTO);
+        }
+    }
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_item_detail);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.detail_toolbar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own detail action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
-
-        // Show the Up button in the action bar.
-        ActionBar actionBar = getSupportActionBar();
-        if (actionBar != null) {
-            actionBar.setDisplayHomeAsUpEnabled(true);
-        }
-
-        // savedInstanceState is non-null when there is fragment state
-        // saved from previous configurations of this activity
-        // (e.g. when rotating the screen from portrait to landscape).
-        // In this case, the fragment will automatically be re-added
-        // to its container so we don't need to manually add it.
-        // For more information, see the Fragments API guide at:
-        //
-        // http://developer.android.com/guide/components/fragments.html
-        //
         if (savedInstanceState == null) {
             // Create the detail fragment and add it to the activity
             // using a fragment transaction.
@@ -62,7 +114,68 @@ public class ItemDetailActivity extends AppCompatActivity {
                     .add(R.id.item_detail_container, fragment)
                     .commit();
         }
+
+
+        /*
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+                        .setAction("Action", null).show();
+            }
+        }); */
+
+        /*
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawer.setDrawerListener(toggle);
+        toggle.syncState();
+
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this); */
+
+        generateAttributes();
+        Item item = new Item("Item 1", 1);
+        item.setAttributes(mAttributes);
+        mItemAttributesView = (LinearLayout)findViewById(R.id.item_attributes);
+        int i;
+        mAttribute1.setValue("1/1/2016");
+        mAttribute2.setValue("Red");
+        mAttribute3.setValue("$10");
+        for (i=0; i<mAttributes.size(); i++) {
+            Attribute attribute = mAttributes.get(i);
+            generateAttributeTextView(mItemAttributesView, i, attribute.getName(), attribute.getValue());
+        }
+
+        mCameraButton = (ImageButton) findViewById(R.id.camera_button);
+        mCameraButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                capturePhoto();
+            }
+        });
+
+
     }
+
+        // Show the Up button in the action bar.
+    /*
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setDisplayHomeAsUpEnabled(true);
+        } */
+
+        // savedInstanceState is non-null when there is fragment state
+        // saved from previous configurations of this activity
+        // (e.g. when rotating the screen from portrait to landscape).
+        // In this case, the fragment will automatically be re-added
+        // to its container so we don't need to manually add it.
+        // For more information, see the Fragments API guide at:
+        //
+        // http://developer.android.com/guide/components/fragments.html
+        //
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -79,5 +192,13 @@ public class ItemDetailActivity extends AppCompatActivity {
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == TAKE_PHOTO) {
+            if (resultCode == RESULT_OK) {
+                //Save photo
+            }
+        }
     }
 }

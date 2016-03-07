@@ -3,5 +3,9 @@
     <string name="title_item_detail">Item Detail</string>
     <string name="item_name_edit_text">Item Name</string>
     <string name="item_name">Item Name</string>
+    <string name="collection_name">Collection Name</string>
+    <string name="camera_button">Take</string>
+    <string name="save_button">Save</string>
+    <string name="cancel_button">Cancel</string>
 
 </resources>
