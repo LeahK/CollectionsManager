@@ -1,6 +1,7 @@
 package com.example.wduello.collectionmanager;
 
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -18,6 +19,7 @@ import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageButton;
 import android.widget.Toast;
+import android.content.Intent;
 
 import java.util.ArrayList;
 
@@ -43,8 +45,12 @@ public class MainCollectionsPage extends AppCompatActivity
         addItem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                /*
                 Snackbar.make(view, "ADD NEW ITEM", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                        .setAction("Action", null).show(); */
+                Intent itemDetailIntent = getPackageManager().getLaunchIntentForPackage("com.example.wduello.collectionsmanager");
+                startActivity(itemDetailIntent);
+
             }
         });
 

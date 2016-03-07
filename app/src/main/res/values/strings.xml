@@ -7,5 +7,6 @@
     <string name="camera_button">Take</string>
     <string name="save_button">Save</string>
     <string name="cancel_button">Cancel</string>
+    <string name="title_activity_items">ItemsActivity</string>
 
 </resources>

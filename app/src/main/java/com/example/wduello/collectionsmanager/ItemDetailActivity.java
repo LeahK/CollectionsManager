@@ -28,7 +28,7 @@ import java.util.ArrayList;
  * An activity representing a single Item detail screen. This
  * activity is only used narrow width devices. On tablet-size devices,
  * item details are presented side-by-side with a list of items
- * in a {@link ItemListActivity}.
+ * in a {@link ItemsActivity}.
  */
 
 
@@ -47,7 +47,7 @@ public class ItemDetailActivity extends AppCompatActivity {
     private LinearLayout mItemAttributesView;
     private Button mSaveButton;
     private Button mCancelButton;
-    private ImageButton mCameraButton;
+    private Button mCameraButton;
     private boolean mEditMode;
 
     //Hard coded attributes, will be deleted eventually
@@ -121,22 +121,12 @@ public class ItemDetailActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_item_detail);
+        setContentView(R.layout.item_detail);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        //setSupportActionBar(toolbar);
+        Log.d(TAG, "onCreate() called");
 
-        if (savedInstanceState == null) {
-            // Create the detail fragment and add it to the activity
-            // using a fragment transaction.
-            Bundle arguments = new Bundle();
-            arguments.putString(ItemDetailFragment.ARG_ITEM_ID,
-                    getIntent().getStringExtra(ItemDetailFragment.ARG_ITEM_ID));
-            ItemDetailFragment fragment = new ItemDetailFragment();
-            fragment.setArguments(arguments);
-            getSupportFragmentManager().beginTransaction()
-                    .add(R.id.item_detail_container, fragment)
-                    .commit();
-        }
+
 
 
         /*
@@ -174,7 +164,7 @@ public class ItemDetailActivity extends AppCompatActivity {
             generateAttributeTextView(mItemAttributesView, i, attribute.getName(), attribute.getValue());
         }
 
-        mCameraButton = (ImageButton) findViewById(R.id.camera_button);
+        mCameraButton = (Button) findViewById(R.id.camera_button);
         mCameraButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 capturePhoto();
@@ -221,12 +211,13 @@ public class ItemDetailActivity extends AppCompatActivity {
             //
             // http://developer.android.com/design/patterns/navigation.html#up-vs-back
             //
-            NavUtils.navigateUpTo(this, new Intent(this, ItemListActivity.class));
+            NavUtils.navigateUpTo(this, new Intent(this, ItemsActivity.class));
             return true;
         }
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == TAKE_PHOTO) {
             if (resultCode == RESULT_OK) {
@@ -241,4 +232,24 @@ public class ItemDetailActivity extends AppCompatActivity {
         Log.d(TAG, "onPause() called");
         //Save item
     }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        Log.d(TAG, "onResume() called");
+        //Load item
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        Log.d(TAG, "onStop() called");
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        Log.d(TAG, "onDestroy() called");
+    }
+
 }

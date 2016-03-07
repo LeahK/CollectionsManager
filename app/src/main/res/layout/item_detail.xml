@@ -8,7 +8,7 @@ android:layout_height="match_parent"
 android:orientation="vertical"
 android:gravity="center_horizontal"
 app:layout_behavior="@string/appbar_scrolling_view_behavior"
-tools:context="com.example.kayewrobleski.collectionmanageritems.ItemActivity">
+tools:context="com.example.wduello.collectionsmanager.ItemDetailActivity">
 <!--tools:showIn="@layout/app_bar_item"-->
 
 <TextView
@@ -38,13 +38,13 @@ tools:context="com.example.kayewrobleski.collectionmanageritems.ItemActivity">
         android:layout_centerHorizontal="true"
         android:background="@color/colorAccent"/>
 
-    <ImageButton
+    <Button
         android:id="@+id/camera_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignRight="@id/item_image"
         android:layout_alignBottom="@id/item_image"
-        android:src="@string/camera_button"/>
+        android:text="@string/camera_button"/>
 
 </RelativeLayout>
 
