@@ -1,6 +1,7 @@
 package com.example.wduello.collectionmanager;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -17,6 +18,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -39,12 +41,14 @@ public class MainCollectionsPage extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton addItem = (FloatingActionButton) findViewById(R.id.buttonAddItem);
+        FloatingActionButton addItem = (FloatingActionButton) findViewById(R.id.buttonAddCollection);
         addItem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "ADD NEW ITEM", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                // on clicking the add new collection button, transition to the collections
+                // creation page
+                Intent intent = new Intent(MainCollectionsPage.this, AddCollection.class);
+                startActivity(intent);
             }
         });
 
@@ -136,6 +140,13 @@ public class MainCollectionsPage extends AppCompatActivity
                     Toast.makeText(MainCollectionsPage.this, "Clicked image!", Toast.LENGTH_SHORT).show();
                 }
             });
+
+            // create a textView
+            TextView collection_or_item_name = (TextView) view.findViewById(R.id.collection_or_item_name);
+
+            // set the text to the name of the collection or item
+            // @TODO --> replace with actual text
+            collection_or_item_name.setText("Placeholder");
 
                     // when done setting all the text and shtuff
                     // return the view
