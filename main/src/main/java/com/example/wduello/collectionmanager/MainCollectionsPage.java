@@ -1,6 +1,7 @@
 package com.example.wduello.collectionmanager;
 
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -20,6 +21,7 @@ import android.widget.GridView;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.content.Intent;
 
 import java.util.ArrayList;
 
@@ -41,14 +43,16 @@ public class MainCollectionsPage extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton addItem = (FloatingActionButton) findViewById(R.id.buttonAddCollection);
+        FloatingActionButton addItem = (FloatingActionButton) findViewById(R.id.buttonAddItem);
         addItem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // on clicking the add new collection button, transition to the collections
-                // creation page
-                Intent intent = new Intent(MainCollectionsPage.this, AddCollection.class);
-                startActivity(intent);
+                /*
+                Snackbar.make(view, "ADD NEW ITEM", Snackbar.LENGTH_LONG)
+                        .setAction("Action", null).show(); */
+                Intent itemDetailIntent = getPackageManager().getLaunchIntentForPackage("com.example.wduello.collectionsmanager");
+                startActivity(itemDetailIntent);
+
             }
         });
 

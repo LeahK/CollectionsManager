@@ -6,6 +6,7 @@ package com.example.wduello.collectionsmanager;
 
 import android.content.Context;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 import org.json.JSONException;
 import org.json.JSONTokener;
@@ -15,8 +16,11 @@ import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.io.OutputStream;
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 
 
 public class CollectionsManagerJSONSerializer {
@@ -29,23 +33,28 @@ public class CollectionsManagerJSONSerializer {
         mFilename = f;
     }
 
-    public void saveItem(Item item) throws JSONException, IOException {
-        //Build an object in JSON
-        JSONObject object = item.toJSON();
+    public void saveItems(ArrayList<Item> items) throws JSONException, IOException {
+
+        //Build an array in JSON
+        JSONArray array = new JSONArray();
+
+        for (Item i : items)
+            array.put(i.toJSON());
 
         //Write the file to disk
         Writer writer = null;
         try {
             OutputStream out = mContext.openFileOutput(mFilename, Context.MODE_PRIVATE);
-            writer.write(object.toString());
+            writer = new OutputStreamWriter(out);
+            writer.write(array.toString());
         } finally {
             if (writer != null)
                 writer.close();
         }
     }
 
-    public Item loadItem() throws IOException, JSONException {
-        Item item = new Item();
+    public ArrayList<Item> loadItems() throws IOException, JSONException {
+        ArrayList<Item> items = new ArrayList<>();
         BufferedReader reader = null;
         try {
             //Open and read file into StringBuilder
@@ -56,14 +65,17 @@ public class CollectionsManagerJSONSerializer {
             while ((line = reader.readLine()) != null) {
                 jsonString.append(line);
             }
-            JSONObject object = new JSONObject(jsonString.toString());
-            item = new Item(object);
+            //Parse the JSON using JSONTokener
+            JSONArray array = (JSONArray) new JSONTokener(jsonString.toString()).nextValue();
+            for (int i = 0; i < array.length(); i++) {
+                items.add(new Item(array.getJSONObject(i)));
+            }
         } catch (FileNotFoundException e) {
             //Ignore
         } finally {
             if (reader != null)
                 reader.close();
         }
-        return item;
+        return items;
     }
 }
