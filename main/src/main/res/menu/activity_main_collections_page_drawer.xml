@@ -7,7 +7,7 @@
             android:title="My Collections" />
         <item
             android:id="@+id/nav_advertisements"
-            android:title="Gallery" />
+            android:title="My Advertisements" />
         <item
             android:id="@+id/nav_soldItems"
             android:title="My Sold Items" />

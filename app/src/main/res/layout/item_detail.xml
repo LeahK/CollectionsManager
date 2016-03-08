@@ -8,7 +8,7 @@ android:layout_height="match_parent"
 android:orientation="vertical"
 android:gravity="center_horizontal"
 app:layout_behavior="@string/appbar_scrolling_view_behavior"
-tools:context="com.example.kayewrobleski.collectionmanageritems.ItemActivity">
+tools:context="com.example.wduello.collectionsmanager.ItemDetailActivity">
 <!--tools:showIn="@layout/app_bar_item"-->
 
 <TextView
@@ -19,7 +19,7 @@ tools:context="com.example.kayewrobleski.collectionmanageritems.ItemActivity">
     android:text="@string/collection_name"
     android:textSize="20sp"/>
 
-<TextView
+<EditText
     android:id="@+id/item_name"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
@@ -44,7 +44,7 @@ tools:context="com.example.kayewrobleski.collectionmanageritems.ItemActivity">
         android:layout_height="wrap_content"
         android:layout_alignRight="@id/item_image"
         android:layout_alignBottom="@id/item_image"
-        android:src="@string/camera_button"/>
+        android:src="@drawable/ic_menu_camera"/>
 
 </RelativeLayout>
 

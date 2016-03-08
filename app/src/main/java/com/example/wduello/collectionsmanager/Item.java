@@ -1,5 +1,8 @@
 package com.example.wduello.collectionsmanager;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -14,10 +17,12 @@ public class Item {
     private static final String JSON_ID = "id";
     private static final String JSON_COLLECTION_ID = "collectionId";
     private static final String JSON_NAME = "name";
+    private static final String JSON_PHOTO = "photo";
     private static final String JSON_ATTRIBUTES = "attributes";
     private UUID mId;
     private int mCollectionId;
     private String mName;
+    private Photo mPhoto;
     private ArrayList<Attribute> mAttributes;
 
     public Item() {
@@ -30,6 +35,9 @@ public class Item {
         mCollectionId = json.getInt(JSON_COLLECTION_ID);
         if (json.has(JSON_NAME)) {
             mName = json.getString(JSON_NAME);
+        }
+        if (json.has(JSON_PHOTO)) {
+            mPhoto = new Photo(json.getJSONObject(JSON_PHOTO));
         }
         String [] attributes = json.getString(JSON_ATTRIBUTES).split(";");
         for (String a: attributes) {
@@ -44,16 +52,17 @@ public class Item {
         json.put(JSON_ID, mId.toString());
         json.put(JSON_COLLECTION_ID, ""+mCollectionId);
         json.put(JSON_NAME, mName);
-        String attributes = "";
+        json.put(JSON_PHOTO, mPhoto.toJSON());
+        ArrayList<JSONObject> jsonAttributes = new ArrayList<>();
         for (Attribute a : mAttributes) {
-            String type = a.getType();
-            String name = a.getName();
-            String value = a.getValue();
-            String attribute = type + "," + name + "," + value + ";";
-            attributes = attributes + attribute;
+            jsonAttributes.add(a.toJSON());
         }
-        json.put(JSON_ATTRIBUTES, attributes);
+        json.put(JSON_ATTRIBUTES, jsonAttributes);
         return json;
+    }
+
+    public UUID getId() {
+        return mId;
     }
 
     public int getCollectionId() {return mCollectionId; }
@@ -68,8 +77,20 @@ public class Item {
         mName = name;
     }
 
-    public ArrayList<Attribute> getAttributes(int collectionId) {
-        //get attributes for collectionid
+    public ArrayList<Attribute> getAttributes() {
+        //get attributes
+        return mAttributes;
+    }
+
+    public Photo getPhoto() {
+        return mPhoto;
+    }
+
+    public void setPhoto(Photo photo) {
+        mPhoto = photo;
+    }
+
+    public ArrayList<Attribute> getAttribute() {
         return mAttributes;
     }
 
@@ -80,4 +101,5 @@ public class Item {
     public void setAttributeValue(Attribute attribute, String value) {
         attribute.setValue(value);
     }
+
 }
