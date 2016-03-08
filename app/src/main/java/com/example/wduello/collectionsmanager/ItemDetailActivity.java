@@ -1,7 +1,11 @@
 package com.example.wduello.collectionsmanager;
 
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -16,12 +20,16 @@ import android.support.v7.app.ActionBar;
 import android.support.v4.app.NavUtils;
 import android.view.MenuItem;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.util.Log;
 import android.content.ComponentName;
+import android.net.Uri;
 
+import java.io.File;
 import java.util.ArrayList;
 
 /**
@@ -36,27 +44,35 @@ public class ItemDetailActivity extends AppCompatActivity {
 
     //Static values
     private static final String TAG = "ItemDetail";
-    private static final String FILENAME = "items.json";
+    private static final String KEY_NAME = "name";
+    private static final String KEY_PHOTO = "photo";
+    private static final String KEY_ATTRIBUTES = "attributes";
+    static final int REQUEST_IMAGE_CAPTURE = 1;
+
+    public static String EXTRA_ITEM_ID = "com.example.wduello.collectionsmanager.ITEM_ID";
+    public static String EXTRA_ITEM_COLLECTION = "com.example.wduello.collectionsmanager.ITEM_COLLECTION";
+    public static String EXTRA_ITEM_NAME = "com.example.wduello.collectionsmanager.ITEM_NAME";
+    public static String EXTRA_ITEM_PHOTO = "com.example.wduello.collectionsmanager.ITEM_PHOTO";
+    public static String EXTRA_ITEM_ATTRIBUTES = "com.example.wduello.collectionsmanager.ITEM_ATTRIBUTES";
+
 
     //Objects for saving
     private Item mItem;
-    private CollectionsManagerJSONSerializer mSerializer;
 
     //Widgets
-    private TextView mItemName;
+    private EditText mItemName;
+    private ImageView mImageView;
+    private Bitmap mBitmap;
     private LinearLayout mItemAttributesView;
     private Button mSaveButton;
     private Button mCancelButton;
-    private Button mCameraButton;
-    private boolean mEditMode;
+    private ImageButton mCameraButton;
 
     //Hard coded attributes, will be deleted eventually
     private ArrayList<Attribute> mAttributes;
     private Attribute mAttribute1;
     private Attribute mAttribute2;
     private Attribute mAttribute3;
-
-    private static int TAKE_PHOTO = 1;
 
     //This is for testing, will eventually be deleted
     private void generateAttributes() {
@@ -87,7 +103,7 @@ public class ItemDetailActivity extends AppCompatActivity {
         attributeName.setPadding(0, 10, 100, 10);
 
         //Create text view for attribute value
-        TextView attributeValue = new TextView(this);
+        EditText attributeValue = new EditText(this);
         attributeValue.setLayoutParams(textViewParams);
         attributeValue.setText(value);
         attributeValue.setPadding(0, 10, 100, 10);
@@ -100,21 +116,36 @@ public class ItemDetailActivity extends AppCompatActivity {
     }
 
     public void capturePhoto() {
-        Intent cameraIntent = new Intent(MediaStore.INTENT_ACTION_STILL_IMAGE_CAMERA);
+        Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         if (cameraIntent.resolveActivity(getPackageManager()) != null) {
-            startActivityForResult(cameraIntent, TAKE_PHOTO);
+            startActivityForResult(cameraIntent, REQUEST_IMAGE_CAPTURE);
         }
     }
 
-    public boolean saveItem() {
-        try {
-            mSerializer.saveItem(mItem);
-            Log.d(TAG, "item saved to file");
-            return true;
-        } catch (Exception e) {
-            Log.e(TAG, "Error saving item: ", e);
-            return false;
+    public void setAttributes(LinearLayout itemAttributesList) {
+        int childCount = itemAttributesList.getChildCount();
+        for (int i = 0; i < childCount; i++) {
+            LinearLayout itemAttribute =  (LinearLayout)itemAttributesList.getChildAt(i);
+            TextView attributeName = (TextView)itemAttribute.getChildAt(0);
+            EditText attributeValue = (EditText)itemAttribute.getChildAt(1);
+            mAttributes.get(i).setName(attributeName.getText().toString());
+            mAttributes.get(i).setValue(attributeValue.getText().toString());
         }
+    }
+
+    public void createItem() {
+        mItem = new Item();
+        mItem.setName(mItemName.getText().toString());
+        if (mBitmap != null) {
+            Photo photo = new Photo(mBitmap);
+            mItem.setPhoto(photo);
+        } else {
+            mItem.setPhoto(null);
+        }
+        mItem.setCollectionId(0);
+        LinearLayout itemAttributesLayout = (LinearLayout)findViewById(R.id.item_attributes);
+        setAttributes(itemAttributesLayout);
+        mItem.setAttributes(mAttributes);
     }
 
 
@@ -126,6 +157,69 @@ public class ItemDetailActivity extends AppCompatActivity {
         //setSupportActionBar(toolbar);
         Log.d(TAG, "onCreate() called");
 
+        //Initialize item name
+        mItemName = (EditText)findViewById(R.id.item_name);
+
+        if (savedInstanceState != null) {
+            mItemName.setText(savedInstanceState.getString(KEY_NAME));
+            mBitmap = savedInstanceState.getParcelable(KEY_PHOTO);
+            mImageView.setImageBitmap(mBitmap);
+            ArrayList<String> attributeValues = savedInstanceState.getStringArrayList(KEY_ATTRIBUTES);
+            for (int i = 0; i < attributeValues.size(); i ++) {
+                Attribute attribute = mAttributes.get(i);
+                String value = attributeValues.get(i);
+                attribute.setValue(value);
+            }
+        }
+
+        generateAttributes();
+        Item item = new Item();
+        item.setName("Item 1");
+        item.setCollectionId(0);
+        item.setAttributes(mAttributes);
+        mItemAttributesView = (LinearLayout)findViewById(R.id.item_attributes);
+        int i;
+        mAttribute1.setValue("1/1/2016");
+        mAttribute2.setValue("Red");
+        mAttribute3.setValue("$10");
+        for (i=0; i<mAttributes.size(); i++) {
+            Attribute attribute = mAttributes.get(i);
+            generateAttributeTextView(mItemAttributesView, i, attribute.getName(), attribute.getValue());
+        }
+
+        mCameraButton = (ImageButton) findViewById(R.id.camera_button);
+        mCameraButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                capturePhoto();
+            }
+        });
+
+        mSaveButton = (Button) findViewById(R.id.save_button);
+        mSaveButton.setOnClickListener(new View.OnClickListener(){
+            public void onClick(View v) {
+                createItem();
+                Intent intent = new Intent();
+                Bundle b = new Bundle();
+                b.putString(EXTRA_ITEM_ID, mItem.getId().toString());
+                b.putString(EXTRA_ITEM_NAME, mItem.getName());
+                b.putInt(EXTRA_ITEM_COLLECTION, 0);
+                if (mItem.getPhoto() != null) {
+                    b.putParcelable(EXTRA_ITEM_PHOTO, mItem.getPhoto().getBitmap());
+                }
+                b.putSerializable(EXTRA_ITEM_ATTRIBUTES, mItem.getAttributes());
+                intent.putExtras(b);
+                setResult(RESULT_OK, intent);
+                finish();
+            }
+        });
+
+        mCancelButton = (Button) findViewById(R.id.cancel_button);
+        mCancelButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
 
 
 
@@ -148,38 +242,20 @@ public class ItemDetailActivity extends AppCompatActivity {
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this); */
+    }
 
-        generateAttributes();
-        Item item = new Item();
-        item.setName("Item 1");
-        item.setCollectionId(0);
-        item.setAttributes(mAttributes);
-        mItemAttributesView = (LinearLayout)findViewById(R.id.item_attributes);
-        int i;
-        mAttribute1.setValue("1/1/2016");
-        mAttribute2.setValue("Red");
-        mAttribute3.setValue("$10");
-        for (i=0; i<mAttributes.size(); i++) {
-            Attribute attribute = mAttributes.get(i);
-            generateAttributeTextView(mItemAttributesView, i, attribute.getName(), attribute.getValue());
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        super.onSaveInstanceState(savedInstanceState);
+        Log.i(TAG, "onSavedInstanceState() called");
+        savedInstanceState.putString(KEY_NAME, mItemName.getText().toString());
+        savedInstanceState.putParcelable(KEY_PHOTO, mBitmap);
+        ArrayList<String> attributeValues = new ArrayList<>();
+        for (Attribute attribute: mAttributes) {
+            String value = attribute.getValue();
+            attributeValues.add(value);
         }
-
-        mCameraButton = (Button) findViewById(R.id.camera_button);
-        mCameraButton.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                capturePhoto();
-            }
-        });
-
-        mSerializer = new CollectionsManagerJSONSerializer(ItemDetailActivity.this, FILENAME);
-        mSaveButton = (Button) findViewById(R.id.save_button);
-        mSaveButton.setOnClickListener(new View.OnClickListener(){
-            public void onClick(View v) {
-                //Save Items
-            }
-        });
-
-
+        savedInstanceState.putStringArrayList(KEY_ATTRIBUTES, attributeValues);
     }
 
         // Show the Up button in the action bar.
@@ -219,10 +295,11 @@ public class ItemDetailActivity extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == TAKE_PHOTO) {
-            if (resultCode == RESULT_OK) {
-                //Save photo
-            }
+        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
+                Bundle extras = data.getExtras();
+                mBitmap = (Bitmap) extras.get("data");
+                mImageView = (ImageView)findViewById(R.id.item_image);
+                mImageView.setImageBitmap(mBitmap);
         }
     }
 
