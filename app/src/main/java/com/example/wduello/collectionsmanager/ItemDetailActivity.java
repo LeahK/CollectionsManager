@@ -30,7 +30,10 @@ import android.content.ComponentName;
 import android.net.Uri;
 
 import java.io.File;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 /**
  * An activity representing a single Item detail screen. This
@@ -58,6 +61,7 @@ public class ItemDetailActivity extends AppCompatActivity {
 
     //Objects for saving
     private Item mItem;
+    private String mCurrentPhotoPath;
 
     //Widgets
     private EditText mItemName;
@@ -115,10 +119,35 @@ public class ItemDetailActivity extends AppCompatActivity {
         newAttribute.addView(attributeValue);
     }
 
+    private File createImageFile() throws IOException {
+        //Create an image file name
+        String timeStamp = new SimpleDateFormat("yyMMdd_HHmmss").format(new Date());
+        String imageFileName = "JPEG_" + timeStamp + "_";
+        File storageDir = Environment.getExternalStoragePublicDirectory(
+                Environment.DIRECTORY_PICTURES);
+        File image = File.createTempFile(
+                imageFileName,
+                ".jpg",
+                storageDir
+        );
+        //Save a file: path for use with ACTION_VIEW intents
+        mCurrentPhotoPath = "file:" + image.getAbsolutePath();
+        return image;
+    }
+
     public void capturePhoto() {
         Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         if (cameraIntent.resolveActivity(getPackageManager()) != null) {
-            startActivityForResult(cameraIntent, REQUEST_IMAGE_CAPTURE);
+            File photoFile = null;
+            try {
+                photoFile = createImageFile();
+            } catch (IOException ex) {
+                Log.e(TAG, "Error creating image file");
+            }
+            if (photoFile != null) {
+                cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(photoFile));
+                startActivityForResult(cameraIntent, REQUEST_IMAGE_CAPTURE);
+            }
         }
     }
 
@@ -136,12 +165,8 @@ public class ItemDetailActivity extends AppCompatActivity {
     public void createItem() {
         mItem = new Item();
         mItem.setName(mItemName.getText().toString());
-        if (mBitmap != null) {
-            Photo photo = new Photo(mBitmap);
-            mItem.setPhoto(photo);
-        } else {
-            mItem.setPhoto(null);
-        }
+        Photo photo = new Photo(mCurrentPhotoPath);
+        mItem.setPhoto(photo);
         mItem.setCollectionId(0);
         LinearLayout itemAttributesLayout = (LinearLayout)findViewById(R.id.item_attributes);
         setAttributes(itemAttributesLayout);
@@ -203,9 +228,7 @@ public class ItemDetailActivity extends AppCompatActivity {
                 b.putString(EXTRA_ITEM_ID, mItem.getId().toString());
                 b.putString(EXTRA_ITEM_NAME, mItem.getName());
                 b.putInt(EXTRA_ITEM_COLLECTION, 0);
-                if (mItem.getPhoto() != null) {
-                    b.putParcelable(EXTRA_ITEM_PHOTO, mItem.getPhoto().getBitmap());
-                }
+                b.putString(EXTRA_ITEM_PHOTO, mCurrentPhotoPath);
                 b.putSerializable(EXTRA_ITEM_ATTRIBUTES, mItem.getAttributes());
                 intent.putExtras(b);
                 setResult(RESULT_OK, intent);
