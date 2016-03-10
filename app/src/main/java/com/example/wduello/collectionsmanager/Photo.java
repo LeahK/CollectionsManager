@@ -15,35 +15,29 @@ import java.io.ByteArrayOutputStream;
  */
 public class Photo {
 
-    private static final String JSON_BITMAP = "bitmap";
+    private static final String JSON_PHOTO = "photo";
 
-    private Bitmap mBitmap;
+    private String mPhotoFilePath;
 
-    public Photo(Bitmap bitmap) {
-        mBitmap = bitmap;
+    public Photo(String photoFilePath) {
+        mPhotoFilePath = photoFilePath;
     }
 
     public Photo(JSONObject json) throws JSONException {
         String jsonString = json.toString();
-        byte[] decodedString = Base64.decode(jsonString, Base64.DEFAULT);
-        mBitmap = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+        mPhotoFilePath = jsonString;
     }
 
     public JSONObject toJSON()  throws JSONException {
         JSONObject json = new JSONObject();
-        Bitmap bitmap = mBitmap;
-        final int COMPRESSION_QUALITY = 100;
-        String encodedImage;
-        ByteArrayOutputStream byteArrayBitmapStream = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.PNG, COMPRESSION_QUALITY, byteArrayBitmapStream);
-        byte[] b = byteArrayBitmapStream.toByteArray();
-        encodedImage = Base64.encodeToString(b, Base64.DEFAULT);
-        json.put(JSON_BITMAP, encodedImage);
+        json.put(JSON_PHOTO, mPhotoFilePath);
         return json;
     }
 
-    public Bitmap getBitmap() {
-        return mBitmap;
+    public String getPhotoFilePath() {
+        return mPhotoFilePath;
     }
+
+    public void setPhotoFilePath(String photoFilePath) { mPhotoFilePath = photoFilePath; }
 
 }

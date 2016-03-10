@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.UUID;
 
 import static com.example.wduello.collectionsmanager.ItemDetailActivity.EXTRA_ITEM_COLLECTION;
+import static com.example.wduello.collectionsmanager.ItemDetailActivity.EXTRA_ITEM_PHOTO;
 
 
 public class ItemsActivity extends AppCompatActivity {
@@ -131,10 +132,9 @@ public class ItemsActivity extends AppCompatActivity {
             }
             mItem.setName(data.getStringExtra(ItemDetailActivity.EXTRA_ITEM_NAME));
             //mItem.setCollectionId(data.getIntExtra(EXTRA_ITEM_COLLECTION));
-            Bitmap b = (Bitmap) data.getParcelableExtra(ItemDetailActivity.EXTRA_ITEM_PHOTO);
-            Photo p = new Photo(b);
-            mItem.setPhoto(p);
-            ArrayList<Attribute> attributes = (ArrayList<Attribute>)data.getSerializableExtra(ItemDetailActivity.EXTRA_ITEM_ATTRIBUTES);
+            Photo photo = new Photo(data.getStringExtra(ItemDetailActivity.EXTRA_ITEM_PHOTO));
+            mItem.setPhoto(photo);
+            ArrayList<Attribute> attributes = (ArrayList<Attribute>)(data.getSerializableExtra(ItemDetailActivity.EXTRA_ITEM_ATTRIBUTES));
             mItem.setAttributes(attributes);
             /*
             boolean saveSuccessful = saveItems();
