@@ -10,7 +10,7 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="com.example.wduello.collectionmanager.AddCollection"
-    tools:showIn="@layout/app_bar_add_collection">
+    tools:showIn="@layout/add_collection_app_bar">
 
     <TextView
         android:layout_width="wrap_content"
