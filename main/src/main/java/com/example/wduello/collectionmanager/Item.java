@@ -4,42 +4,22 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.Serializable;
+import java.util.HashMap;
 
 /**
  * Created by kayewrobleski on 3/6/16.
  */
 public class Item implements Serializable {
 
-    private static final String JSON_NAME = "name";
-    private static final String JSON_TYPE = "type";
-    private static final String JSON_VALUE = "value";
-
-    private String mType;
     private String mName;
-    private String mValue;
+    private HashMap<String, Attribute> mAttributes;
+    private Photo mPhoto;
 
-    public Item(String type, String name, String value) {
-        //Generate empty attribute
-        mType = type;
+    public Item(String name) {
         mName = name;
-        mValue = value;
+        mAttributes = new HashMap<String, Attribute>();
     }
 
-    public JSONObject toJSON() throws JSONException {
-        JSONObject json = new JSONObject();
-        json.put(JSON_TYPE, mType);
-        json.put(JSON_NAME, mName);
-        json.put(JSON_VALUE, mValue);
-        return json;
-    }
-
-    public String getType() {
-        return mType;
-    }
-
-    public void setType(String type) {
-        mType = type;
-    }
 
     public String getName() {
         return mName;
@@ -49,11 +29,21 @@ public class Item implements Serializable {
         mName = name;
     }
 
-    public String getValue() {
-        return mValue;
+    public HashMap<String, Attribute> getAttributes() {
+        return mAttributes;
     }
 
-    public void setValue(String value) {
-        mValue = value;
+    public void setAttributes(HashMap<String, Attribute> mAttributes) {
+        this.mAttributes = mAttributes;
     }
+
+    public Photo getPhoto() {
+        return mPhoto;
+    }
+
+    public void setPhoto(Photo mPhoto) {
+        this.mPhoto = mPhoto;
+    }
+
+
 }

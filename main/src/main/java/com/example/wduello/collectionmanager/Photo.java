@@ -16,16 +16,6 @@ public class Photo {
         mPhotoFilePath = photoFilePath;
     }
 
-    public Photo(JSONObject json) throws JSONException {
-        String jsonString = json.toString();
-        mPhotoFilePath = jsonString;
-    }
-
-    public JSONObject toJSON()  throws JSONException {
-        JSONObject json = new JSONObject();
-        json.put(JSON_PHOTO, mPhotoFilePath);
-        return json;
-    }
 
     public String getPhotoFilePath() {
         return mPhotoFilePath;

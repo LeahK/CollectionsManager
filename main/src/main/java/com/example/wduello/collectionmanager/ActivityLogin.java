@@ -30,10 +30,13 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.firebase.client.AuthData;
 import com.firebase.client.Firebase;
+import com.firebase.client.FirebaseError;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import static android.Manifest.permission.READ_CONTACTS;
 
@@ -142,6 +145,37 @@ public class ActivityLogin extends AppCompatActivity implements LoaderCallbacks<
     }
 
 
+    public static void createUser(String email, String password) {
+        Firebase ref = new Firebase("https://collectionsapp.firebaseio.com");
+        ref.createUser(email, password, new Firebase.ValueResultHandler<Map<String, Object>>() {
+            @Override
+            public void onSuccess(Map<String, Object> result) {
+                System.out.println("Successfully created user account with uid: " + result.get("uid"));
+            }
+
+            @Override
+            public void onError(FirebaseError firebaseError) {
+                // there was an error
+            }
+        });
+    }
+
+    public static void authenticateUser(String email, String password) {
+        Firebase ref = new Firebase("https://collectionsapp.firebaseio.com");
+        ref.authWithPassword(email, password, new Firebase.AuthResultHandler() {
+            @Override
+            public void onAuthenticated(AuthData authData) {
+                System.out.println("User ID: " + authData.getUid() + ", Provider: " + authData.getProvider());
+            }
+
+            @Override
+            public void onAuthenticationError(FirebaseError firebaseError) {
+                // there was an error
+            }
+        });
+
+    }
+    
     /**
      * Attempts to sign in or register the account specified by the login form.
      * If there are form errors (invalid email, missing fields, etc.), the
