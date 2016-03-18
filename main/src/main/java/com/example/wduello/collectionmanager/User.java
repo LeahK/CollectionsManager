@@ -1,13 +1,11 @@
 package com.example.wduello.collectionmanager;
 
 
-import com.firebase.client.AuthData;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 
 import java.io.Serializable;
 import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Created by Justin Gregorio
@@ -16,18 +14,18 @@ import java.util.Map;
 public class User implements Serializable {
 
     private static Firebase userRef = new Firebase("https://collectionsapp.firebaseio.com/users");
-
     private HashMap <String, Collection> mCollections;
     private String mEmail;
-    private String mPassword;
     private User mCurrentUser;
+    private String mUserName;
 
     // constructor
-    public User(String userName, String password) {
+    public User(String email, String password) {
 
         if (mCurrentUser == null) {
-            mEmail = userName;
-            mPassword = password;
+            mEmail = email;
+            String[] emailParts = email.split("@");
+            mUserName = emailParts[0];
             mCurrentUser = this;
             mCollections = new HashMap<String, Collection>();
         }
@@ -38,18 +36,27 @@ public class User implements Serializable {
         return mEmail;
     }
 
-    public String getPassword() {
-        return mPassword;
+    public HashMap<String, Collection> getCollections() {
+        return mCollections;
+    }
+
+    public void setCollections(HashMap<String, Collection> mCollections) {
+        this.mCollections = mCollections;
     }
 
     public User getCurrentUser() {
         return mCurrentUser;
     }
 
+    public String getmUserName() {
+        return mUserName;
+    }
+
+
     public void saveUser() {
 
-        Firebase currentUserRef = this.userRef.child(this.mEmail);
-        currentUserRef.setValue(mCurrentUser, new Firebase.CompletionListener() {
+        Firebase currentUserRef = userRef.child(mUserName);
+        currentUserRef.child("collections").setValue(this.mCollections, new Firebase.CompletionListener() {
             @Override
             public void onComplete(FirebaseError firebaseError, Firebase firebase) {
                 if (firebaseError != null) {
@@ -59,6 +66,7 @@ public class User implements Serializable {
                 }
             }
         });
+
 
     }
 
