@@ -56,6 +56,7 @@ public class ActivityLogin extends AppCompatActivity implements LoaderCallbacks<
     private EditText mPasswordView;
     private View mProgressView;
     private View mLoginFormView;
+    private User mCurrentUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -141,9 +142,9 @@ public class ActivityLogin extends AppCompatActivity implements LoaderCallbacks<
     }
 
 
-    public static void createUser(String email, String password) {
+    public static void createUser(String email, String password, ActivityLogin loginObject) {
         /** Testing 123 */
-        User testUser = new User(email, password);
+        User testUser = new User(email);
 
         // create some attributes
         HashMap<String, Attribute> attributes = new HashMap<>();
@@ -168,7 +169,7 @@ public class ActivityLogin extends AppCompatActivity implements LoaderCallbacks<
 
         // create a collection
         HashMap<String, Collection> collections = new HashMap<>();
-        Collection collection = new Collection("collection_test");
+        Collection collection = new Collection();
         collection.setItems(items);
         collections.put("collection", collection);
 
@@ -190,10 +191,11 @@ public class ActivityLogin extends AppCompatActivity implements LoaderCallbacks<
                 System.out.println("There was a problem creating the user.");
             }
         });
+
+        loginObject.mCurrentUser = new User(email);
     }
 
     public static void authenticateUser(String email, String password) {
-        new User(email, password);
         Firebase ref = new Firebase("https://collectionsapp.firebaseio.com");
         ref.authWithPassword(email, password, new Firebase.AuthResultHandler() {
             @Override
@@ -296,7 +298,7 @@ public class ActivityLogin extends AppCompatActivity implements LoaderCallbacks<
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
             showProgress(true);
-            createUser(email, password);
+            createUser(email, password, this);
         }
     }
 

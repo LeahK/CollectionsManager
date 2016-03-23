@@ -11,12 +11,10 @@ import java.io.Serializable;
 public class Attribute implements Serializable {
 
     private String mType;
-    private String mName;
     private String mValue;
 
-    public Attribute(String type, String name, String value) {
+    public Attribute(String type, String value) {
         mType = type;
-        mName = name;
         mValue = value;
     }
 
@@ -28,14 +26,6 @@ public class Attribute implements Serializable {
 
     public void setType(String type) {
         mType = type;
-    }
-
-    public String getName() {
-        return mName;
-    }
-
-    public void setName(String name) {
-        mName = name;
     }
 
     public String getValue() {

@@ -11,22 +11,11 @@ import java.util.HashMap;
  */
 public class Item implements Serializable {
 
-    private String mName;
     private HashMap<String, Attribute> mAttributes;
     private Photo mPhoto;
 
-    public Item(String name) {
-        mName = name;
+    public Item() {
         mAttributes = new HashMap<String, Attribute>();
-    }
-
-
-    public String getName() {
-        return mName;
-    }
-
-    public void setName(String name) {
-        mName = name;
     }
 
     public HashMap<String, Attribute> getAttributes() {

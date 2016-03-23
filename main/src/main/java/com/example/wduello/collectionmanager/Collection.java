@@ -11,21 +11,10 @@ import java.util.HashMap;
  */
 public class Collection implements Serializable {
 
-    private String mName;
     private HashMap<String, Item> mItems;
 
-    public Collection(String name) {
-        mName = name;
+    public Collection() {
         mItems = new HashMap<String, Item>();
-    }
-
-
-    public String getName() {
-        return mName;
-    }
-
-    public void setName(String name) {
-        mName = name;
     }
 
     public HashMap<String, Item> getItems() {

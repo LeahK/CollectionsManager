@@ -13,21 +13,20 @@ import java.util.HashMap;
  */
 public class User implements Serializable {
 
-    private static Firebase userRef = new Firebase("https://collectionsapp.firebaseio.com/users");
     private HashMap <String, Collection> mCollections;
     private String mEmail;
-    private User mCurrentUser;
+    private boolean mInstantiated = false;
     private String mUserName;
 
     // constructor
-    public User(String email, String password) {
+    public User(String email) {
 
-        if (mCurrentUser == null) {
+        if (!mInstantiated) {
             mEmail = email;
             String[] emailParts = email.split("@");
             mUserName = emailParts[0];
-            mCurrentUser = this;
             mCollections = new HashMap<String, Collection>();
+            mInstantiated = true;
         }
 
     }
@@ -44,17 +43,14 @@ public class User implements Serializable {
         this.mCollections = mCollections;
     }
 
-    public User getCurrentUser() {
-        return mCurrentUser;
-    }
-
-    public String getmUserName() {
+    public String getUserName() {
         return mUserName;
     }
 
 
     public void saveUser() {
 
+        Firebase userRef = new Firebase("https://collectionsapp.firebaseio.com/users");
         Firebase currentUserRef = userRef.child(mUserName);
         currentUserRef.child("collections").setValue(this.mCollections, new Firebase.CompletionListener() {
             @Override
