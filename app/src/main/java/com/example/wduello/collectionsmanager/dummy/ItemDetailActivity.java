@@ -1,22 +1,15 @@
-package com.example.wduello.collectionsmanager;
+package com.example.wduello.collectionsmanager.dummy;
 
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.NavigationView;
-import android.support.design.widget.Snackbar;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
 import android.view.View;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.app.ActionBar;
 import android.support.v4.app.NavUtils;
 import android.view.MenuItem;
 import android.widget.Button;
@@ -26,9 +19,11 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.util.Log;
-import android.content.ComponentName;
 import android.net.Uri;
-import android.widget.Toast;
+
+import com.example.wduello.collectionsmanager.Attribute;
+import com.example.wduello.collectionsmanager.Item;
+import com.example.wduello.collectionsmanager.R;
 
 import java.io.File;
 import java.io.IOException;
@@ -172,7 +167,7 @@ public class ItemDetailActivity extends AppCompatActivity {
         mItem = new Item();
         mItem.setName(mItemName.getText().toString());
         Photo photo = new Photo(mCurrentPhotoPath);
-        mItem.setPhoto(photo);
+        //mItem.setPhoto(photo);
         mItem.setCollectionId(0);
         LinearLayout itemAttributesLayout = (LinearLayout)findViewById(R.id.item_attributes);
         setAttributes(itemAttributesLayout);

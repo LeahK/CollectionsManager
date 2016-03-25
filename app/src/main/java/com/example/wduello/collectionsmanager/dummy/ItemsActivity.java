@@ -1,28 +1,21 @@
-package com.example.wduello.collectionsmanager;
+package com.example.wduello.collectionsmanager.dummy;
 
-import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
-import android.widget.Adapter;
 import android.widget.ListView;
-import android.widget.ArrayAdapter;
 import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
 import android.content.Intent;
 
-import java.lang.reflect.Array;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import com.example.wduello.collectionsmanager.Attribute;
+import com.example.wduello.collectionsmanager.CollectionsManagerJSONSerializer;
+import com.example.wduello.collectionsmanager.Item;
+import com.example.wduello.collectionsmanager.R;
 
-import static com.example.wduello.collectionsmanager.ItemDetailActivity.EXTRA_ITEM_COLLECTION;
-import static com.example.wduello.collectionsmanager.ItemDetailActivity.EXTRA_ITEM_PHOTO;
+import java.util.ArrayList;
 
 
 public class ItemsActivity extends AppCompatActivity {
@@ -58,17 +51,6 @@ public class ItemsActivity extends AppCompatActivity {
         */
         ItemListAdapter adapter = new ItemListAdapter(this, R.layout.item_list_row, mItems);
         mItemListView.setAdapter(adapter);
-    }
-
-    public boolean saveItems() {
-        try {
-            mSerializer.saveItems(mItems);
-            Log.d(TAG, "item saved to file");
-            return true;
-        } catch (Exception e) {
-            Log.e(TAG, "Error saving item: ", e);
-            return false;
-        }
     }
 
     @Override
@@ -132,8 +114,8 @@ public class ItemsActivity extends AppCompatActivity {
             }
             mItem.setName(data.getStringExtra(ItemDetailActivity.EXTRA_ITEM_NAME));
             //mItem.setCollectionId(data.getIntExtra(EXTRA_ITEM_COLLECTION));
-            Photo photo = new Photo(data.getStringExtra(ItemDetailActivity.EXTRA_ITEM_PHOTO));
-            mItem.setPhoto(photo);
+            //Photo photo = new Photo(data.getStringExtra(ItemDetailActivity.EXTRA_ITEM_PHOTO));
+            //mItem.setPhoto(photo);
             ArrayList<Attribute> attributes = (ArrayList<Attribute>)(data.getSerializableExtra(ItemDetailActivity.EXTRA_ITEM_ATTRIBUTES));
             mItem.setAttributes(attributes);
             /*
