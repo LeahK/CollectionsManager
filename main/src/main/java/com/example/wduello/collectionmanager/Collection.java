@@ -1,7 +1,7 @@
 package com.example.wduello.collectionmanager;
 
-import org.json.JSONException;
-import org.json.JSONObject;
+import com.firebase.client.Firebase;
+import com.firebase.client.FirebaseError;
 
 import java.io.Serializable;
 import java.util.HashMap;
@@ -9,11 +9,15 @@ import java.util.HashMap;
 /**
  * Created by kayewrobleski on 3/6/16.
  */
-public class Collection implements Serializable {
+public class Collection extends ActivityLogin implements Serializable {
 
     private HashMap<String, Item> mItems;
+    protected String mCollectionName;
 
-    public Collection() {
+    protected Collection(){}
+
+    public Collection(String name) {
+        mCollectionName = name;
         mItems = new HashMap<String, Item>();
     }
 
@@ -25,5 +29,31 @@ public class Collection implements Serializable {
         this.mItems = mItems;
     }
 
+    public String getmCollectionName() {
+        return mCollectionName;
+    }
+
+    public void setmCollectionName(String mCollectionName) {
+        this.mCollectionName = mCollectionName;
+    }
+
+    public void saveCollection() {
+
+        String userCollectionRef = "https://collectionsapp.firebaseio.com/users/"
+                + mCurrentUser.getUserName() + "/collections/";
+        Firebase collectionRef = new Firebase(userCollectionRef);
+        collectionRef.setValue(this, new Firebase.CompletionListener() {
+            @Override
+            public void onComplete(FirebaseError firebaseError, Firebase firebase) {
+                if (firebaseError != null) {
+                    System.out.println("Collection data could not be saved. " + firebaseError.getMessage());
+                } else {
+                    System.out.println("Collection data saved successfully.");
+                }
+            }
+        });
+
+
+    }
 
 }

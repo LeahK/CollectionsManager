@@ -56,7 +56,7 @@ public class ActivityLogin extends AppCompatActivity implements LoaderCallbacks<
     private EditText mPasswordView;
     private View mProgressView;
     private View mLoginFormView;
-    private User mCurrentUser;
+    public static User mCurrentUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -169,7 +169,7 @@ public class ActivityLogin extends AppCompatActivity implements LoaderCallbacks<
 
         // create a collection
         HashMap<String, Collection> collections = new HashMap<>();
-        Collection collection = new Collection();
+        Collection collection = new Collection("collection");
         collection.setItems(items);
         collections.put("collection", collection);
 

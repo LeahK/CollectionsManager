@@ -52,13 +52,13 @@ public class User implements Serializable {
 
         Firebase userRef = new Firebase("https://collectionsapp.firebaseio.com/users");
         Firebase currentUserRef = userRef.child(mUserName);
-        currentUserRef.child("collections").setValue(this.mCollections, new Firebase.CompletionListener() {
+        currentUserRef.setValue(this, new Firebase.CompletionListener() {
             @Override
             public void onComplete(FirebaseError firebaseError, Firebase firebase) {
                 if (firebaseError != null) {
-                    System.out.println("Data could not be saved. " + firebaseError.getMessage());
+                    System.out.println("User data could not be saved. " + firebaseError.getMessage());
                 } else {
-                    System.out.println("Data saved successfully.");
+                    System.out.println("User data saved successfully.");
                 }
             }
         });
