@@ -33,11 +33,10 @@ import android.widget.TextView;
 import com.firebase.client.AuthData;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
+import com.firebase.client.FirebaseException;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import static android.Manifest.permission.READ_CONTACTS;
 
@@ -51,12 +50,18 @@ public class ActivityLogin extends AppCompatActivity implements LoaderCallbacks<
      */
     private static final int REQUEST_READ_CONTACTS = 0;
 
+    /**
+     * Keep track of the login task to ensure we can cancel it if requested.
+     */
+    private AsyncTask mAuthTask = null;
+
     // UI references.
     private AutoCompleteTextView mEmailView;
     private EditText mPasswordView;
     private View mProgressView;
     private View mLoginFormView;
-    public static User mCurrentUser;
+    public User mCurrentUser;
+    private static boolean subscribe = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,15 +86,17 @@ public class ActivityLogin extends AppCompatActivity implements LoaderCallbacks<
 
         Button mEmailSignInButton = (Button) findViewById(R.id.email_sign_in_button);
         Button mEmailSubscribeButton = (Button) findViewById(R.id.email_subscribe_button);
-        mEmailSubscribeButton.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                attemptSubscribe();
-            }
-        });
         mEmailSignInButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
+                subscribe = false;
+                attemptLogin();
+            }
+        });
+        mEmailSubscribeButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                subscribe = true;
                 attemptLogin();
             }
         });
@@ -142,81 +149,15 @@ public class ActivityLogin extends AppCompatActivity implements LoaderCallbacks<
     }
 
 
-    public static void createUser(String email, String password, ActivityLogin loginObject) {
-        /** Testing 123 */
-        User testUser = new User(email);
-
-        // create some attributes
-        HashMap<String, Attribute> attributes = new HashMap<>();
-        Attribute thing_one = new Attribute("thing", "thing_one", "this is a thing");
-        Attribute thing_two = new Attribute("thing", "thing_two", "this is a thing");
-        Attribute thing_three = new Attribute("thing", "thing_three", "this is a thing");
-        attributes.put("attribute_one", thing_one);
-        attributes.put("attribute_two", thing_two);
-        attributes.put("attribute_three", thing_three);
-
-        // create some items
-        HashMap<String, Item> items = new HashMap<>();
-        Item item_one = new Item("item_one");
-        Item item_two = new Item("item_two");
-        Item item_three = new Item("item_three");
-        item_one.setAttributes(attributes);
-        item_two.setAttributes(attributes);
-        item_three.setAttributes(attributes);
-        items.put("item_one", item_one);
-        items.put("item_two", item_two);
-        items.put("item_three", item_three);
-
-        // create a collection
-        HashMap<String, Collection> collections = new HashMap<>();
-        Collection collection = new Collection("collection");
-        collection.setItems(items);
-        collections.put("collection", collection);
-
-        // store the collection and save
-        testUser.setCollections(collections);
-        testUser.saveUser();
-
-        /** testing 123 */
-
-        Firebase ref = new Firebase("https://collectionsapp.firebaseio.com");
-        ref.createUser(email, password, new Firebase.ValueResultHandler<Map<String, Object>>() {
-            @Override
-            public void onSuccess(Map<String, Object> result) {
-                System.out.println("Successfully created user account with uid: " + result.get("uid"));
-            }
-
-            @Override
-            public void onError(FirebaseError firebaseError) {
-                System.out.println("There was a problem creating the user.");
-            }
-        });
-
-        loginObject.mCurrentUser = new User(email);
-    }
-
-    public static void authenticateUser(String email, String password) {
-        Firebase ref = new Firebase("https://collectionsapp.firebaseio.com");
-        ref.authWithPassword(email, password, new Firebase.AuthResultHandler() {
-            @Override
-            public void onAuthenticated(AuthData authData) {
-                System.out.println("User ID: " + authData.getUid() + ", Provider: " + authData.getProvider());
-            }
-
-            @Override
-            public void onAuthenticationError(FirebaseError firebaseError) {
-                System.out.println("There was a problem authenticating the user.");
-            }
-        });
-
-    }
-
     /**
      * Attempts to sign in or register the account specified by the login form.
      * If there are form errors (invalid email, missing fields, etc.), the
      * errors are presented and no actual login attempt is made.
      */
     private void attemptLogin() {
+        if (mAuthTask != null) {
+            return;
+        }
 
         // Reset errors.
         mEmailView.setError(null);
@@ -255,50 +196,13 @@ public class ActivityLogin extends AppCompatActivity implements LoaderCallbacks<
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
             showProgress(true);
-            authenticateUser(email, password);
-        }
-    }
-
-    private void attemptSubscribe() {
-
-        // Reset errors.
-        mEmailView.setError(null);
-        mPasswordView.setError(null);
-
-        // Store values at the time of the login attempt.
-        String email = mEmailView.getText().toString();
-        String password = mPasswordView.getText().toString();
-
-        boolean cancel = false;
-        View focusView = null;
-
-        // Check for a valid password, if the user entered one.
-        if (!TextUtils.isEmpty(password) && !isPasswordValid(password)) {
-            mPasswordView.setError(getString(R.string.error_invalid_password));
-            focusView = mPasswordView;
-            cancel = true;
-        }
-
-        // Check for a valid email address.
-        if (TextUtils.isEmpty(email)) {
-            mEmailView.setError(getString(R.string.error_field_required));
-            focusView = mEmailView;
-            cancel = true;
-        } else if (!isEmailValid(email)) {
-            mEmailView.setError(getString(R.string.error_invalid_email));
-            focusView = mEmailView;
-            cancel = true;
-        }
-
-        if (cancel) {
-            // There was an error; don't attempt login and focus the first
-            // form field with an error.
-            focusView.requestFocus();
-        } else {
-            // Show a progress spinner, and kick off a background task to
-            // perform the user login attempt.
-            showProgress(true);
-            createUser(email, password, this);
+            if (!subscribe) {
+                mAuthTask = new UserLoginTask(email, password);
+                mAuthTask.execute((Void) null);
+            } else {
+                mAuthTask = new UserSignupTask(email, password);
+                mAuthTask.execute((Void) null);
+            }
         }
     }
 
@@ -402,6 +306,133 @@ public class ActivityLogin extends AppCompatActivity implements LoaderCallbacks<
         int IS_PRIMARY = 1;
     }
 
+    /**
+     * Represents an asynchronous login/registration task used to authenticate
+     * the user.
+     */
+    public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
 
+        private final String mEmail;
+        private final String mPassword;
+
+        UserLoginTask(String email, String password) {
+            mEmail = email;
+            mPassword = password;
+        }
+
+        @Override
+        protected Boolean doInBackground(Void... params) {
+
+            Firebase ref = new Firebase("https://collectionsapp.firebaseio.com");
+            Firebase.AuthResultHandler authResultHandler = new Firebase.AuthResultHandler() {
+                @Override
+                public void onAuthenticated(AuthData authData) {
+                    System.out.println("User authenticated: " + authData.getUid());
+                }
+                @Override
+                public void onAuthenticationError(FirebaseError firebaseError) {
+                    // Authenticated failed with error firebaseError
+                    System.out.println("User not authenticated: " + firebaseError.getMessage());
+                    throw new FirebaseException("User not authenticated: " + firebaseError.getMessage()
+                            + firebaseError.getDetails());
+                }
+            };
+
+            try {
+                ref.authWithPassword(mEmail, mPassword, authResultHandler);
+            } catch(FirebaseException e){
+                return false;
+            }
+
+            return true;
+        }
+
+        @Override
+        protected void onPostExecute(final Boolean success) {
+            mAuthTask = null;
+            showProgress(false);
+
+            if (success) {
+                // transition from ActivityLogin to ActivityCollections
+                Intent intent = new Intent(ActivityLogin.this, ActivityCollections.class);
+                startActivity(intent);
+            } else {
+                mPasswordView.setError(getString(R.string.error_incorrect_password));
+                mPasswordView.requestFocus();
+            }
+        }
+
+        @Override
+        protected void onCancelled() {
+            mAuthTask = null;
+            showProgress(false);
+        }
+    }
+
+    /**
+     * Represents an asynchronous login/registration task used to authenticate
+     * the user.
+     */
+    public class UserSignupTask extends AsyncTask<Void, Void, Boolean> {
+
+        private final String mEmail;
+        private final String mPassword;
+
+        UserSignupTask(String email, String password) {
+            mEmail = email;
+            mPassword = password;
+        }
+
+        @Override
+        protected Boolean doInBackground(Void... params) {
+            // TODO: attempt authentication against a network service.
+
+            Firebase ref = new Firebase("https://collectionsapp.firebaseio.com");
+            try {
+
+                ref.createUser(mEmail, mPassword, new Firebase.ResultHandler() {
+
+                    @Override
+                    public void onSuccess() {
+                        System.out.println("User was successfully created");
+                    }
+
+                    @Override
+                    public void onError(FirebaseError error) {
+                        System.out.println("There was a problem creating the user:" + error.getMessage());
+                        throw new FirebaseException("There was a problem creating the user:" + error.getMessage());
+                   }
+                });
+            } catch (FirebaseException e) {
+                return false;
+            }
+
+            mCurrentUser = new User(mEmail);
+
+
+            return true;
+        }
+
+        @Override
+        protected void onPostExecute(final Boolean success) {
+            mAuthTask = null;
+            showProgress(false);
+
+            if (success) {
+                // transition from ActivityLogin to ActivityCollections
+                Intent intent = new Intent(ActivityLogin.this, ActivityCollections.class);
+                startActivity(intent);
+            } else {
+                mPasswordView.setError(getString(R.string.error_incorrect_password));
+                mPasswordView.requestFocus();
+            }
+        }
+
+        @Override
+        protected void onCancelled() {
+            mAuthTask = null;
+            showProgress(false);
+        }
+    }
 }
 
