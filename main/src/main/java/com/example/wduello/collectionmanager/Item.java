@@ -27,10 +27,9 @@ public class Item extends Collection implements Serializable {
 
     private void listenForAttributeChanges(){
 
-        String userCollectionRef = "https://collectionsapp.firebaseio.com/users/"
-                + mCurrentUser.getUserName() + "/collections/";
-        Firebase collectionRef = new Firebase(userCollectionRef);
-        Firebase attributeRef = collectionRef.child(mCollectionName).child(mItemName).child("attributes");
+        String attributeRefUrl = "https://collectionsapp.firebaseio.com/users/"
+                + ActivityLogin.mCurrentUser.getUserName() + "/collections/" + mCollectionName + "/" + mItemName + "/attributes/";
+        Firebase attributeRef = new Firebase(attributeRefUrl);
         attributeRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
@@ -77,7 +76,7 @@ public class Item extends Collection implements Serializable {
     public void saveItem() {
 
         String userCollectionRef = "https://collectionsapp.firebaseio.com/users/"
-                + mCurrentUser.getUserName() + "/collections/";
+                + ActivityLogin.mCurrentUser.getUserName() + "/collections/";
         Firebase collectionRef = new Firebase(userCollectionRef);
         Firebase itemRef = collectionRef.child(super.mCollectionName).child(mItemName);
         itemRef.setValue(this, new Firebase.CompletionListener() {

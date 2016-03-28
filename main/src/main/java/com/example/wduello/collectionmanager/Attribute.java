@@ -48,7 +48,7 @@ public class Attribute extends Item implements Serializable {
     public void saveAttribute() {
 
         String userCollectionRef = "https://collectionsapp.firebaseio.com/users/"
-                + mCurrentUser.getUserName() + "/collections/";
+                + ActivityLogin.mCurrentUser.getUserName() + "/collections/";
         Firebase collectionRef = new Firebase(userCollectionRef);
         Firebase attributeRef = collectionRef.child(mCollectionName).child(mItemName).child("attributes").child(mAttributeName);
         attributeRef.setValue(this, new Firebase.CompletionListener() {
