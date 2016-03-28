@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.location.Criteria;
+import android.media.Image;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -43,6 +44,7 @@ public class ItemFragment extends Fragment {
     private CheckBox mAdvertisedCheckBox;
     private ImageView mPhotoView;
     private String mCurrentPhotoPath;
+    private FloatingActionButton mDeleteButton;
 
     private OnFragmentInteractionListener mListener;
 
@@ -157,6 +159,15 @@ public class ItemFragment extends Fragment {
             }
         });
 
+        mDeleteButton = (FloatingActionButton)v.findViewById(R.id.fab_delete_item);
+        mDeleteButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ItemList.get(getActivity()).deleteItem(mItem);
+                getActivity().finish();
+            }
+        });
+
         return v;
     }
 
@@ -180,6 +191,7 @@ public class ItemFragment extends Fragment {
     @Override
     public void onPause() {
         super.onPause();
+        Log.d(TAG, "OnPause() called");
         ItemList.get(getActivity()).saveItems();
     }
 

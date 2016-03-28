@@ -45,4 +45,14 @@
         android:layout_marginRight="16dp"
         android:text="@string/item_advertised_label"/>
 
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab_delete_item"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="@dimen/fab_margin"
+        android:src="@drawable/ic_delete" />
+
+
+
 </LinearLayout>
