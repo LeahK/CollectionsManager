@@ -36,7 +36,7 @@ public class ItemFragment extends Fragment {
     public static final int REQUEST_IMAGE_CAPTURE = 1;
 
     //Private members
-    private LocalItem mLocalItem;
+    private Item mItem;
     private EditText mNameField;
     private CheckBox mAdvertisedCheckBox;
     private ImageView mPhotoView;
@@ -100,7 +100,7 @@ public class ItemFragment extends Fragment {
             Bitmap bitmap = BitmapFactory.decodeFile(photoFile.getAbsolutePath());
             //mPhotoView = (ImageView)v.findViewById(R.id.item_image);
             mPhotoView.setImageBitmap(bitmap);
-            mLocalItem.setPhoto(mCurrentPhotoPath);
+            mItem.setPhotoPath(mCurrentPhotoPath);
         }
     }
 
@@ -108,7 +108,7 @@ public class ItemFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         UUID itemId = (UUID)getArguments().getSerializable(EXTRA_ITEM_ID);
-        mLocalItem = ItemList.get(getActivity()).getItem(itemId);
+        mItem = ItemList.get(getActivity()).getItem(itemId);
         //Bundle args = getActivity().getIntent().getExtras();
         //mCollectionId = args.getInt(ItemListFragment.EXTRA_COLLECTION_ID);
     }
@@ -120,12 +120,12 @@ public class ItemFragment extends Fragment {
         View v = inflater.inflate(R.layout.fragment_item, container, false);
 
         mNameField = (EditText)v.findViewById(R.id.item_name);
-        mNameField.setText(mLocalItem.getName());
+        mNameField.setText(mItem.getItemName());
         mNameField.addTextChangedListener(new TextWatcher() {
             @Override
             public void onTextChanged(
                     CharSequence c, int start, int before, int count) {
-                mLocalItem.setName(c.toString());
+                mItem.setItemName(c.toString());
             }
 
             @Override
@@ -141,19 +141,19 @@ public class ItemFragment extends Fragment {
         });
 
         mAdvertisedCheckBox = (CheckBox)v.findViewById(R.id.item_advertised);
-        mAdvertisedCheckBox.setChecked(mLocalItem.isAdvertised());
+        mAdvertisedCheckBox.setChecked(mItem.isAdvertised());
         mAdvertisedCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                mLocalItem.setAdvertised(isChecked);
+                mItem.setAdvertised(isChecked);
             }
         });
 
 
         mPhotoView = (ImageView) v.findViewById(R.id.item_image);
         //mCurrentPhotoPath = mLocalItem.getPhotoPath();
-        if (mLocalItem.getPhotoPath() != null) {
-            mCurrentPhotoPath = mLocalItem.getPhotoPath();
+        if (mItem.getPhotoPath() != null) {
+            mCurrentPhotoPath = mItem.getPhotoPath();
             setPhoto();
         }
         ImageButton cameraButton = (ImageButton) v.findViewById(R.id.camera_button);
@@ -167,7 +167,7 @@ public class ItemFragment extends Fragment {
         mDeleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ItemList.get(getActivity()).deleteItem(mLocalItem);
+                //ItemList.get(getActivity()).deleteItem(mItem);
                 getActivity().finish();
             }
         });
@@ -196,7 +196,7 @@ public class ItemFragment extends Fragment {
     public void onPause() {
         super.onPause();
         Log.d(TAG, "OnPause() called");
-        ItemList.get(getActivity()).saveItems();
+        //ItemList.get(getActivity()).saveItems();
     }
 
     @Override

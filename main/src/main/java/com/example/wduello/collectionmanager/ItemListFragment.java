@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ListFragment;
 import android.os.Bundle;
-import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
@@ -30,7 +29,7 @@ public class ItemListFragment extends ListFragment {
     private static final String TAG = "ItemListFragment";
     public static final String EXTRA_COLLECTION_ID = "com.example.wduello.collectionmanager.collection_id";
 
-    private ArrayList<LocalItem> mLocalItems;
+    private ArrayList<Item> mItems;
     protected int mCollectionId;
 
 
@@ -41,8 +40,8 @@ public class ItemListFragment extends ListFragment {
         //getActivity().setTitle(R.string.items_title);
         Bundle args = getActivity().getIntent().getExtras();
         mCollectionId = args.getInt(ItemListFragment.EXTRA_COLLECTION_ID);
-        mLocalItems = ItemList.get(getActivity()).getLocalItems();
-        ItemAdapter adapter = new ItemAdapter(mLocalItems);
+        mItems = ItemList.get(getActivity()).getLocalItems();
+        ItemAdapter adapter = new ItemAdapter(mItems);
         setListAdapter(adapter);
     }
 
@@ -56,13 +55,13 @@ public class ItemListFragment extends ListFragment {
             @Override
             public void onClick(View view) {
                 //Create new localItem
-                LocalItem localItem = new LocalItem();
-                localItem.setCollectionId(mCollectionId);
-                ItemList.get(getActivity()).addItem(localItem);
+                Item item = new Item();
+                //localItem.setCollectionId(mCollectionId);
+                ItemList.get(getActivity()).addItem(item);
 
                 //Start ItemActivity
                 Intent i = new Intent(getActivity(), ItemActivity.class);
-                i.putExtra(ItemFragment.EXTRA_ITEM_ID, localItem.getId());
+                i.putExtra(ItemFragment.EXTRA_ITEM_ID, item.getId());
                 startActivity(i);
             }
         });
@@ -75,8 +74,8 @@ public class ItemListFragment extends ListFragment {
 
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
-        LocalItem localItem = ((ItemAdapter)getListAdapter()).getItem(position);
-        Log.d(TAG, localItem.getName() + " was clicked");
+        Item localItem = ((ItemAdapter)getListAdapter()).getItem(position);
+        Log.d(TAG, localItem.getItemName() + " was clicked");
 
         //Start ItemActivity
         Intent i = new Intent(getActivity(), ItemActivity.class);
@@ -85,9 +84,9 @@ public class ItemListFragment extends ListFragment {
     }
 
 
-    private class ItemAdapter extends ArrayAdapter<LocalItem> {
+    private class ItemAdapter extends ArrayAdapter<Item> {
 
-        public ItemAdapter(ArrayList<LocalItem> localItems) {
+        public ItemAdapter(ArrayList<Item> localItems) {
             super(getActivity(), 0, localItems);
         }
 
@@ -100,19 +99,15 @@ public class ItemListFragment extends ListFragment {
             }
 
             //Configure view for this localItem
-            LocalItem localItem = getItem(position);
-
-            if (localItem.getCollectionId() == mCollectionId) {
+            Item localItem = getItem(position);
 
                 TextView nameTextView = (TextView) convertView.findViewById(R.id.custom_list_item_nameTextView);
-                nameTextView.setText(localItem.getName());
+                nameTextView.setText(localItem.getItemName());
 
                 CheckBox advertisedCheckBox = (CheckBox) convertView.findViewById(R.id.custom_list_item_advertisedCheckBox);
                 advertisedCheckBox.setChecked(localItem.isAdvertised());
 
                 return convertView;
-            }
-            return null;
         }
     }
 
@@ -141,7 +136,7 @@ public class ItemListFragment extends ListFragment {
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)menuItem.getMenuInfo();
         int position = info.position;
         ItemAdapter adapter = (ItemAdapter)getListAdapter();
-        LocalItem localItem = adapter.getItem(position);
+        Item localItem = adapter.getItem(position);
 
         switch (menuItem.getItemId()) {
             case R.id.menu_item_delete:
