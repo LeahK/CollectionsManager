@@ -43,7 +43,7 @@ public class MainCollectionsPage extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton addItem = (FloatingActionButton) findViewById(R.id.buttonAddItem);
+        FloatingActionButton addItem = (FloatingActionButton) findViewById(R.id.buttonAddCollection);
         addItem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
