@@ -1,4 +1,4 @@
-package com.example.wduello.collectionsmanager;
+package com.example.wduello.collectionsmanager.dummy;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -8,6 +8,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.ImageView;
+
+import com.example.wduello.collectionsmanager.Item;
+import com.example.wduello.collectionsmanager.R;
 
 import java.util.List;
 

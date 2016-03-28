@@ -1,12 +1,20 @@
 <resources>
     <string name="app_name">CollectionsManager</string>
     <string name="title_item_detail">Item Detail</string>
-    <string name="item_name_edit_text">Item Name</string>
-    <string name="item_name">Item Name</string>
+    <string name="item_name_hint">Enter a name for this item.</string>
+    <string name="item_name_label">Name</string>
+    <string name="items_title">Items</string>
+    <string name="item_advertised_label">Advertised?</string>
     <string name="collection_name">Collection Name</string>
     <string name="camera_button">Take</string>
     <string name="save_button">Save</string>
     <string name="cancel_button">Cancel</string>
     <string name="title_activity_items">ItemsActivity</string>
+    <string name="title_activity_item">Item Activity</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="title_activity_item_list">ItemListActivity</string>
+    <string name="title_activity_single_fragment">SingleFragmentActivity</string>
 
 </resources>

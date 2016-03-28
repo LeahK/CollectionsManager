@@ -2,31 +2,39 @@
 <manifest package="com.example.wduello.collectionsmanager"
           xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity android:name=".ItemListActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
         <activity
-            android:name=".ItemDetailActivity"
+            android:name=".ItemActivity"
+            android:label="@string/title_activity_item"
+            android:theme="@style/AppTheme.NoActionBar">
+        </activity>
+        <activity
+            android:name=".dummy.ItemDetailActivity"
             android:label="@string/title_item_detail"
-            android:parentActivityName=".ItemsActivity"
+            android:parentActivityName=".dummy.ItemsActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.example.wduello.collectionsmanager.ItemsActivity"/>
+                android:value=".dummy.ItemsActivity"/>
         </activity>
         <activity
-            android:name=".ItemsActivity"
-            android:label="@string/title_activity_items"
+            android:name=".dummy.ItemsActivity"
+            android:label="@string/title_activity_item"
             android:theme="@style/AppTheme.NoActionBar">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
-
-                <category android:name="android.intent.category.LAUNCHER"/>
-            </intent-filter>
         </activity>
     </application>
 
