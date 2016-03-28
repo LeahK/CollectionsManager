@@ -72,7 +72,6 @@ public class Item extends Collection implements Serializable {
         this.mItemName = mName;
     }
 
-
     public void saveItem() {
 
         String userCollectionRef = "https://collectionsapp.firebaseio.com/users/"
