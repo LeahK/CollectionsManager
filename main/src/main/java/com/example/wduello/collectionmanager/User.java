@@ -1,8 +1,10 @@
 package com.example.wduello.collectionmanager;
 
 
+import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
+import com.firebase.client.ValueEventListener;
 
 import java.io.Serializable;
 import java.util.HashMap;
@@ -28,7 +30,31 @@ public class User implements Serializable {
             mCollections = new HashMap<String, Collection>();
             mInstantiated = true;
         }
+        listenForCollectionChanges();
 
+    }
+
+    private void listenForCollectionChanges(){
+
+        String userCollectionRef = "https://collectionsapp.firebaseio.com/users/"
+                + ActivityLogin.mCurrentUser.getUserName() + "/collections/";
+        Firebase collectionRef = new Firebase(userCollectionRef);
+        collectionRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                System.out.println("There are " + snapshot.getChildrenCount() + " collections");
+                for (DataSnapshot collectionSnapshot : snapshot.getChildren()) {
+                    Collection collection = collectionSnapshot.getValue(Collection.class);
+                    if (!mCollections.containsKey(collection.getCollectionName())){
+                        mCollections.put(collection.getCollectionName(), collection);
+                    }
+                }
+            }
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+                System.out.println("The read failed: " + firebaseError.getMessage());
+            }
+        });
     }
 
     public String getEmail() {

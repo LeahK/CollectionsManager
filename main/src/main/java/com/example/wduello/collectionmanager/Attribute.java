@@ -37,7 +37,7 @@ public class Attribute extends Item implements Serializable {
     }
 
 
-    public String getmAttributeNameName() {
+    public String getAttributeName() {
         return mAttributeName;
     }
 
@@ -50,7 +50,7 @@ public class Attribute extends Item implements Serializable {
         String userCollectionRef = "https://collectionsapp.firebaseio.com/users/"
                 + mCurrentUser.getUserName() + "/collections/";
         Firebase collectionRef = new Firebase(userCollectionRef);
-        Firebase attributeRef = collectionRef.child(mCollectionName).child(mItemName).child(mAttributeName);
+        Firebase attributeRef = collectionRef.child(mCollectionName).child(mItemName).child("attributes").child(mAttributeName);
         attributeRef.setValue(this, new Firebase.CompletionListener() {
             @Override
             public void onComplete(FirebaseError firebaseError, Firebase firebase) {

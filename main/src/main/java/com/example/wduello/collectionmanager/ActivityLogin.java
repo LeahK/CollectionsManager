@@ -55,7 +55,7 @@ public class ActivityLogin extends AppCompatActivity implements LoaderCallbacks<
     private EditText mPasswordView;
     private View mProgressView;
     private View mLoginFormView;
-    public User mCurrentUser;
+    public static User mCurrentUser;
     private static boolean subscribe = false;
 
     @Override

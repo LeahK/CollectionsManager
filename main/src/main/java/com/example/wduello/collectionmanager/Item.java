@@ -1,7 +1,9 @@
 package com.example.wduello.collectionmanager;
 
+import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
+import com.firebase.client.ValueEventListener;
 
 import java.io.Serializable;
 import java.util.HashMap;
@@ -20,6 +22,31 @@ public class Item extends Collection implements Serializable {
     public Item(String name) {
         mAttributes = new HashMap<String, Attribute>();
         mItemName = name;
+        listenForAttributeChanges();
+    }
+
+    private void listenForAttributeChanges(){
+
+        String userCollectionRef = "https://collectionsapp.firebaseio.com/users/"
+                + mCurrentUser.getUserName() + "/collections/";
+        Firebase collectionRef = new Firebase(userCollectionRef);
+        Firebase attributeRef = collectionRef.child(mCollectionName).child(mItemName).child("attributes");
+        attributeRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                System.out.println("There are " + snapshot.getChildrenCount() + " collections");
+                for (DataSnapshot attributeSnapshot : snapshot.getChildren()) {
+                    Attribute attribute = attributeSnapshot.getValue(Attribute.class);
+                    if (!mAttributes.containsKey(attribute.getAttributeName())){
+                        mAttributes.put(attribute.getAttributeName(), attribute);
+                    }
+                }
+            }
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+                System.out.println("The read failed: " + firebaseError.getMessage());
+            }
+        });
     }
 
     public HashMap<String, Attribute> getAttributes() {
