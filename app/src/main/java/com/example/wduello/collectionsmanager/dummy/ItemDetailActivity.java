@@ -166,7 +166,7 @@ public class ItemDetailActivity extends AppCompatActivity {
     public void createItem() {
         mItem = new Item();
         mItem.setName(mItemName.getText().toString());
-        Photo photo = new Photo(mCurrentPhotoPath);
+        //Photo photo = new Photo(mCurrentPhotoPath);
         //mItem.setPhoto(photo);
         mItem.setCollectionId(0);
         LinearLayout itemAttributesLayout = (LinearLayout)findViewById(R.id.item_attributes);

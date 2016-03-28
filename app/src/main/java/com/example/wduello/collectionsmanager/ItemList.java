@@ -45,6 +45,8 @@ public class ItemList {
         mItems.add(i);
     }
 
+    public void deleteItem(Item i ) { mItems.remove(i); }
+
     public boolean saveItems() {
         try {
             mSerializer.saveItems(mItems);
