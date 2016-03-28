@@ -14,9 +14,11 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -77,8 +79,31 @@ public class MainAdvertisementsPage extends AppCompatActivity
         // Collections/Items GRIDVIEW
         //*************************
         GridView gridView = (GridView) findViewById(R.id.gridView);
-        gridView.setAdapter(new GridViewAdapter(this));
+        final GridViewAdapter gridViewAdapter = new GridViewAdapter(this);
+        gridView.setAdapter(gridViewAdapter);
         gridView.setNumColumns(3);
+
+        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                // redirect to itemDetail view
+                Intent itemDetailIntent = getPackageManager().getLaunchIntentForPackage("com.example.wduello.collectionsmanager");
+                startActivity(itemDetailIntent);
+            }
+        });
+
+        gridView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+
+                // remove the selected collection
+                mAdvertisementsThumbIds.remove(position);
+
+                // refresh the view
+                gridViewAdapter.notifyDataSetChanged();
+                return true;
+            }
+        });
     }
 
     //*************************
@@ -127,21 +152,13 @@ public class MainAdvertisementsPage extends AppCompatActivity
             }
 
             // create an image button
-            ImageButton imageButton = (ImageButton) view.findViewById(R.id.imageButton_thumbnail);
+            ImageView imageView = (ImageView) view.findViewById(R.id.imageView_thumbnail);
 
-            // set the image thumbnail to the one from mAdvertisementsThumbIds
-            // @TODO add some logic where if the object is a collection, make the button a
-            // @TODO --- folder icon
-            imageButton.setImageResource(mAdvertisementsThumbIds.get(position));
+            // set the image thumbnail to the one from mCollectionsThumbIds
+            imageView.setImageResource(mAdvertisementsThumbIds.get(position));
 
-            // create an onClickListener for the image
-            imageButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v){
-                    // @TODO --> DEBUG placeholder for eventual new intent (redirect to item/collection page)
-                    Toast.makeText(MainAdvertisementsPage.this, "Clicked image!", Toast.LENGTH_SHORT).show();
-                }
-            });
+            // associate the position with the imageButton
+            imageView.setTag(Integer.valueOf(position));
 
             // create a textView
             TextView collection_or_item_name = (TextView) view.findViewById(R.id.collection_or_item_name);
@@ -150,8 +167,8 @@ public class MainAdvertisementsPage extends AppCompatActivity
             // @TODO --> replace with actual text
             collection_or_item_name.setText("Advertisement");
 
-                    // when done setting all the text and shtuff
-                    // return the view
+            // when done setting all the text and shtuff
+            // return the view
             return view;
         }
     }

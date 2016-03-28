@@ -1,6 +1,7 @@
 package com.example.wduello.collectionmanager;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.support.design.widget.NavigationView;
@@ -142,11 +143,12 @@ public class AddCollection extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.nav_collections) {
-            // @TODO --> placeholder for new intent ... redirect to myCollections page
+            // redirect to myCollections page
             Toast.makeText(AddCollection.this, "MY COLLECTIONS!", Toast.LENGTH_SHORT).show();
         } else if (id == R.id.nav_advertisements) {
-            // @TODO --> placeholder for new intent ... redirect to myAdvertisements page
-            Toast.makeText(AddCollection.this, "MY ADVERTISEMENTS!", Toast.LENGTH_SHORT).show();
+            // redirect to myAdvertisements page
+            Intent mainAdvertisementsPage = new Intent(this, MainAdvertisementsPage.class);
+            startActivity(mainAdvertisementsPage);
         } else if (id == R.id.nav_soldItems) {
 // @TODO --> placeholder for new intent ... redirect to mySoldItems page
             Toast.makeText(AddCollection.this, "MY SOLD ITEMS!", Toast.LENGTH_SHORT).show();

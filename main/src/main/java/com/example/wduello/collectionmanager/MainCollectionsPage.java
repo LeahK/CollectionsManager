@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -14,9 +15,11 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -45,11 +48,9 @@ public class MainCollectionsPage extends AppCompatActivity
         addItem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                /*
-                Snackbar.make(view, "ADD NEW ITEM", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show(); */
-                Intent itemDetailIntent = getPackageManager().getLaunchIntentForPackage("com.example.wduello.collectionsmanager");
-                startActivity(itemDetailIntent);
+                // this button will redirect to the "add a new collection" page
+                Intent intent = new Intent(MainCollectionsPage.this, AddCollection.class);
+                startActivity(intent);
 
             }
         });
@@ -66,6 +67,9 @@ public class MainCollectionsPage extends AppCompatActivity
         //*************************
         // Populate the thumbnail list
         //*************************
+
+        // @TODO -- eventually this will be replaced with calls to external server
+
         populateThumbnails(R.drawable.ic_photo_24dp);
         populateThumbnails(R.drawable.ic_photo_24dp);
         populateThumbnails(R.drawable.ic_photo_24dp);
@@ -77,8 +81,31 @@ public class MainCollectionsPage extends AppCompatActivity
         // Collections/Items GRIDVIEW
         //*************************
         GridView gridView = (GridView) findViewById(R.id.gridView);
-        gridView.setAdapter(new GridViewAdapter(this));
+        final GridViewAdapter gridViewAdapter = new GridViewAdapter(this);
+        gridView.setAdapter(gridViewAdapter);
         gridView.setNumColumns(3);
+
+        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                // redirect to itemDetail view
+                Intent itemDetailIntent = getPackageManager().getLaunchIntentForPackage("com.example.wduello.collectionsmanager");
+                startActivity(itemDetailIntent);
+            }
+        });
+
+        gridView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+
+                // remove the selected collection
+                mCollectionsThumbIds.remove(position);
+
+                // refresh the view
+                gridViewAdapter.notifyDataSetChanged();
+                return true;
+            }
+        });
     }
 
     //*************************
@@ -117,6 +144,12 @@ public class MainCollectionsPage extends AppCompatActivity
             return arg0;
         }
 
+        // this will be used to remove a collection from the gridView and from storage
+        public void removeItem(int position){
+            mCollectionsThumbIds.remove(position);
+            notifyDataSetChanged();
+        }
+
         // note: before this view can display anything, the list containing the thumbnail images
         // MUST be populated. Otherwise, you'll get a blank view.
         @Override
@@ -127,28 +160,20 @@ public class MainCollectionsPage extends AppCompatActivity
             }
 
             // create an image button
-            ImageButton imageButton = (ImageButton) view.findViewById(R.id.imageButton_thumbnail);
+            ImageView imageView = (ImageView) view.findViewById(R.id.imageView_thumbnail);
 
             // set the image thumbnail to the one from mCollectionsThumbIds
-            // @TODO add some logic where if the object is a collection, make the button a
-            // @TODO --- folder icon
-            imageButton.setImageResource(mCollectionsThumbIds.get(position));
+            imageView.setImageResource(mCollectionsThumbIds.get(position));
 
-            // create an onClickListener for the image
-            imageButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v){
-                    // @TODO --> DEBUG placeholder for eventual new intent (redirect to item/collection page)
-                    Toast.makeText(MainCollectionsPage.this, "Clicked image!", Toast.LENGTH_SHORT).show();
-                }
-            });
+            // associate the position with the imageButton
+            imageView.setTag(Integer.valueOf(position));
 
             // create a textView
             TextView collection_or_item_name = (TextView) view.findViewById(R.id.collection_or_item_name);
 
             // set the text to the name of the collection or item
             // @TODO --> replace with actual text
-            collection_or_item_name.setText("Placeholder");
+            collection_or_item_name.setText("Collection");
 
                     // when done setting all the text and shtuff
                     // return the view
@@ -200,7 +225,6 @@ public class MainCollectionsPage extends AppCompatActivity
         } else if (id == R.id.nav_advertisements) {
             // @TODO --> placeholder for new intent ... redirect to myAdvertisements page
             Intent mainAdvertisementsPage = new Intent(this, MainAdvertisementsPage.class);
-            Toast.makeText(MainCollectionsPage.this, "MY ADVERTISEMENTS!", Toast.LENGTH_SHORT).show();
             startActivity(mainAdvertisementsPage);
         } else if (id == R.id.nav_soldItems) {
 // @TODO --> placeholder for new intent ... redirect to mySoldItems page

@@ -2,13 +2,14 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:weightSum="1">
+    android:weightSum="1"
+    android:id="@+id/gridItem">
 
-    <ImageButton
+    <ImageView
         android:layout_width="86dp"
         android:layout_height="wrap_content"
-        android:id="@+id/imageButton_thumbnail"
-        android:layout_weight="0.11" />
+        android:id="@+id/imageView_thumbnail"
+        android:layout_weight=".11" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -16,4 +17,5 @@
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:text="collection_or_item_name"
         android:id="@+id/collection_or_item_name" />
+
 </LinearLayout>
