@@ -1,22 +1,15 @@
-package com.example.wduello.collectionsmanager;
+package com.example.wduello.collectionsmanager.dummy;
 
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.NavigationView;
-import android.support.design.widget.Snackbar;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
 import android.view.View;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.app.ActionBar;
 import android.support.v4.app.NavUtils;
 import android.view.MenuItem;
 import android.widget.Button;
@@ -26,11 +19,17 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.util.Log;
-import android.content.ComponentName;
 import android.net.Uri;
 
+import com.example.wduello.collectionsmanager.Attribute;
+import com.example.wduello.collectionsmanager.Item;
+import com.example.wduello.collectionsmanager.R;
+
 import java.io.File;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 /**
  * An activity representing a single Item detail screen. This
@@ -58,6 +57,7 @@ public class ItemDetailActivity extends AppCompatActivity {
 
     //Objects for saving
     private Item mItem;
+    private String mCurrentPhotoPath;
 
     //Widgets
     private EditText mItemName;
@@ -115,11 +115,41 @@ public class ItemDetailActivity extends AppCompatActivity {
         newAttribute.addView(attributeValue);
     }
 
+    private File createImageFile() throws IOException {
+        //Create an image file name
+        String timeStamp = new SimpleDateFormat("yyMMdd_HHmmss").format(new Date());
+        String imageFileName = "JPEG_" + timeStamp + "_";
+        File storageDir = Environment.getExternalStoragePublicDirectory(
+                Environment.DIRECTORY_PICTURES);
+        File image = File.createTempFile(imageFileName, ".jpg", storageDir);
+        //Save a file: path for use with ACTION_VIEW intents
+        //mCurrentPhotoPath = "file:" + image.getAbsolutePath();
+        mCurrentPhotoPath = image.getAbsolutePath();
+        return image;
+    }
+
     public void capturePhoto() {
         Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         if (cameraIntent.resolveActivity(getPackageManager()) != null) {
-            startActivityForResult(cameraIntent, REQUEST_IMAGE_CAPTURE);
+            File photoFile = null;
+            try {
+                photoFile = createImageFile();
+            } catch (IOException ex) {
+                Log.e(TAG, "Error creating image file,", ex);
+            }
+            if (photoFile != null) {
+                cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(photoFile));
+                startActivityForResult(cameraIntent, REQUEST_IMAGE_CAPTURE);
+            }
         }
+    }
+
+    private void setPhoto() {
+        //Get dimensions of View
+        int targetW = mImageView.getWidth();
+        int targetH = mImageView.getHeight();
+
+        //Get dimensions of bitmap
     }
 
     public void setAttributes(LinearLayout itemAttributesList) {
@@ -136,12 +166,8 @@ public class ItemDetailActivity extends AppCompatActivity {
     public void createItem() {
         mItem = new Item();
         mItem.setName(mItemName.getText().toString());
-        if (mBitmap != null) {
-            Photo photo = new Photo(mBitmap);
-            mItem.setPhoto(photo);
-        } else {
-            mItem.setPhoto(null);
-        }
+        Photo photo = new Photo(mCurrentPhotoPath);
+        //mItem.setPhoto(photo);
         mItem.setCollectionId(0);
         LinearLayout itemAttributesLayout = (LinearLayout)findViewById(R.id.item_attributes);
         setAttributes(itemAttributesLayout);
@@ -162,8 +188,8 @@ public class ItemDetailActivity extends AppCompatActivity {
 
         if (savedInstanceState != null) {
             mItemName.setText(savedInstanceState.getString(KEY_NAME));
-            mBitmap = savedInstanceState.getParcelable(KEY_PHOTO);
-            mImageView.setImageBitmap(mBitmap);
+            //mBitmap = savedInstanceState.getParcelable(KEY_PHOTO);
+//            mImageView.setImageBitmap(mBitmap);
             ArrayList<String> attributeValues = savedInstanceState.getStringArrayList(KEY_ATTRIBUTES);
             for (int i = 0; i < attributeValues.size(); i ++) {
                 Attribute attribute = mAttributes.get(i);
@@ -203,9 +229,7 @@ public class ItemDetailActivity extends AppCompatActivity {
                 b.putString(EXTRA_ITEM_ID, mItem.getId().toString());
                 b.putString(EXTRA_ITEM_NAME, mItem.getName());
                 b.putInt(EXTRA_ITEM_COLLECTION, 0);
-                if (mItem.getPhoto() != null) {
-                    b.putParcelable(EXTRA_ITEM_PHOTO, mItem.getPhoto().getBitmap());
-                }
+                b.putString(EXTRA_ITEM_PHOTO, mCurrentPhotoPath);
                 b.putSerializable(EXTRA_ITEM_ATTRIBUTES, mItem.getAttributes());
                 intent.putExtras(b);
                 setResult(RESULT_OK, intent);
@@ -249,7 +273,7 @@ public class ItemDetailActivity extends AppCompatActivity {
         super.onSaveInstanceState(savedInstanceState);
         Log.i(TAG, "onSavedInstanceState() called");
         savedInstanceState.putString(KEY_NAME, mItemName.getText().toString());
-        savedInstanceState.putParcelable(KEY_PHOTO, mBitmap);
+        //savedInstanceState.putParcelable(KEY_PHOTO, mBitmap);
         ArrayList<String> attributeValues = new ArrayList<>();
         for (Attribute attribute: mAttributes) {
             String value = attribute.getValue();
@@ -295,11 +319,15 @@ public class ItemDetailActivity extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
-                Bundle extras = data.getExtras();
-                mBitmap = (Bitmap) extras.get("data");
+            File photoFile = new File (mCurrentPhotoPath);
+            Uri photoUri = Uri.fromFile(photoFile);
+            if (photoFile.exists()) {
+                Bitmap bitmap = BitmapFactory.decodeFile(photoFile.getAbsolutePath());
                 mImageView = (ImageView)findViewById(R.id.item_image);
-                mImageView.setImageBitmap(mBitmap);
+                mImageView.setImageBitmap(bitmap);
+            }
         }
     }
 

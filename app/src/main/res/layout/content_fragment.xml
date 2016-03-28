@@ -1,5 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+             android:id="@+id/itemFragmentContainer"
+             android:layout_height="match_parent"
+             android:layout_width="match_parent">
+
+</FrameLayout>
+<!--
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -10,15 +17,11 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    android:orientation="vertical"
-    tools:context=".dummy.ItemsActivity"
-    tools:showIn="@layout/activity_items">
+    tools:context="com.example.wduello.collectionsmanager.ItemActivity"
+    tools:showIn="@layout/activity_fragment">
 
-    <ListView
-        android:id="@+id/items_list"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+</RelativeLayout>
+-->
 
-    </ListView>
 
-</LinearLayout>
+
