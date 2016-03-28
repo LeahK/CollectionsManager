@@ -14,14 +14,15 @@ import java.util.HashMap;
 public class Item extends Collection implements Serializable {
 
     private HashMap<String, Attribute> mAttributes;
-    private Photo mPhoto;
+    private String mPhotoPath;
     protected String mItemName;
 
     protected  Item(){}
 
-    public Item(String name) {
+    public Item(String name, String photoPath) {
         mAttributes = new HashMap<String, Attribute>();
         mItemName = name;
+        mPhotoPath = photoPath;
         listenForAttributeChanges();
     }
 
@@ -56,12 +57,12 @@ public class Item extends Collection implements Serializable {
         this.mAttributes = mAttributes;
     }
 
-    public Photo getPhoto() {
-        return mPhoto;
+    public String getPhotoPath() {
+        return mPhotoPath;
     }
 
-    public void setPhoto(Photo mPhoto) {
-        this.mPhoto = mPhoto;
+    public void setPhotoPath(String photoPath ) {
+        this.mPhotoPath = photoPath;
     }
 
     public String getItemName() {
