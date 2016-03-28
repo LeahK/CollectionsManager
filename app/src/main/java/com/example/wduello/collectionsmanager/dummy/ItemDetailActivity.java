@@ -22,7 +22,7 @@ import android.util.Log;
 import android.net.Uri;
 
 import com.example.wduello.collectionsmanager.Attribute;
-import com.example.wduello.collectionsmanager.Item;
+import com.example.wduello.collectionsmanager.LocalItem;
 import com.example.wduello.collectionsmanager.R;
 
 import java.io.File;
@@ -32,7 +32,7 @@ import java.util.ArrayList;
 import java.util.Date;
 
 /**
- * An activity representing a single Item detail screen. This
+ * An activity representing a single LocalItem detail screen. This
  * activity is only used narrow width devices. On tablet-size devices,
  * item details are presented side-by-side with a list of items
  * in a {@link ItemsActivity}.
@@ -56,7 +56,7 @@ public class ItemDetailActivity extends AppCompatActivity {
 
 
     //Objects for saving
-    private Item mItem;
+    private LocalItem mLocalItem;
     private String mCurrentPhotoPath;
 
     //Widgets
@@ -164,14 +164,14 @@ public class ItemDetailActivity extends AppCompatActivity {
     }
 
     public void createItem() {
-        mItem = new Item();
-        mItem.setName(mItemName.getText().toString());
+        mLocalItem = new LocalItem();
+        mLocalItem.setName(mItemName.getText().toString());
         //Photo photo = new Photo(mCurrentPhotoPath);
-        //mItem.setPhoto(photo);
-        mItem.setCollectionId(0);
+        //mLocalItem.setPhoto(photo);
+        mLocalItem.setCollectionId(0);
         LinearLayout itemAttributesLayout = (LinearLayout)findViewById(R.id.item_attributes);
         setAttributes(itemAttributesLayout);
-        mItem.setAttributes(mAttributes);
+        mLocalItem.setAttributes(mAttributes);
     }
 
 
@@ -183,7 +183,7 @@ public class ItemDetailActivity extends AppCompatActivity {
         //setSupportActionBar(toolbar);
         Log.d(TAG, "onCreate() called");
 
-        //Initialize item name
+        //Initialize localItem name
         mItemName = (EditText)findViewById(R.id.item_name);
 
         if (savedInstanceState != null) {
@@ -199,10 +199,10 @@ public class ItemDetailActivity extends AppCompatActivity {
         }
 
         generateAttributes();
-        Item item = new Item();
-        item.setName("Item 1");
-        item.setCollectionId(0);
-        item.setAttributes(mAttributes);
+        LocalItem localItem = new LocalItem();
+        localItem.setName("LocalItem 1");
+        localItem.setCollectionId(0);
+        localItem.setAttributes(mAttributes);
         mItemAttributesView = (LinearLayout)findViewById(R.id.item_attributes);
         int i;
         mAttribute1.setValue("1/1/2016");
@@ -226,11 +226,11 @@ public class ItemDetailActivity extends AppCompatActivity {
                 createItem();
                 Intent intent = new Intent();
                 Bundle b = new Bundle();
-                b.putString(EXTRA_ITEM_ID, mItem.getId().toString());
-                b.putString(EXTRA_ITEM_NAME, mItem.getName());
+                b.putString(EXTRA_ITEM_ID, mLocalItem.getId().toString());
+                b.putString(EXTRA_ITEM_NAME, mLocalItem.getName());
                 b.putInt(EXTRA_ITEM_COLLECTION, 0);
                 b.putString(EXTRA_ITEM_PHOTO, mCurrentPhotoPath);
-                b.putSerializable(EXTRA_ITEM_ATTRIBUTES, mItem.getAttributes());
+                b.putSerializable(EXTRA_ITEM_ATTRIBUTES, mLocalItem.getAttributes());
                 intent.putExtras(b);
                 setResult(RESULT_OK, intent);
                 finish();

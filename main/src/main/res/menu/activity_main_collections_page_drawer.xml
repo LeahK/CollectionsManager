@@ -2,31 +2,31 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <group android:checkableBehavior="single">
-        <item
+        <localItem
             android:id="@+id/nav_collections"
             android:title="My Collections" />
-        <item
+        <localItem
             android:id="@+id/nav_advertisements"
             android:title="My Advertisements" />
-        <item
+        <localItem
             android:id="@+id/nav_soldItems"
             android:title="My Sold Items" />
-        <item
+        <localItem
             android:id="@+id/nav_search"
             android:title="Search" />
     </group>
 
-    <!--<item android:title="Communicate">-->
+    <!--<localItem android:title="Communicate">-->
         <!--<menu>-->
-            <!--<item-->
+            <!--<localItem-->
                 <!--android:id="@+id/nav_share"-->
                 <!--android:icon="@drawable/ic_menu_share"-->
                 <!--android:title="Share" />-->
-            <!--<item-->
+            <!--<localItem-->
                 <!--android:id="@+id/nav_send"-->
                 <!--android:icon="@drawable/ic_menu_send"-->
                 <!--android:title="Send" />-->
         <!--</menu>-->
-    <!--</item>-->
+    <!--</localItem>-->
 
 </menu>

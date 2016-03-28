@@ -1,4 +1,4 @@
-package com.example.wduello.collectionsmanager;
+package com.example.wduello.collectionmanager;
 
 /**
  * Created by kayewrobleski on 3/6/16.
@@ -7,7 +7,6 @@ package com.example.wduello.collectionsmanager;
 import android.content.Context;
 
 import org.json.JSONArray;
-import org.json.JSONObject;
 import org.json.JSONException;
 import org.json.JSONTokener;
 
@@ -19,7 +18,6 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.io.OutputStream;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 
@@ -33,12 +31,12 @@ public class CollectionsManagerJSONSerializer {
         mFilename = f;
     }
 
-    public void saveItems(ArrayList<Item> items) throws JSONException, IOException {
+    public void saveItems(ArrayList<LocalItem> localItems) throws JSONException, IOException {
 
         //Build an array in JSON
         JSONArray array = new JSONArray();
 
-        for (Item i : items)
+        for (LocalItem i : localItems)
             array.put(i.toJSON());
 
         //Write the file to disk
@@ -53,8 +51,8 @@ public class CollectionsManagerJSONSerializer {
         }
     }
 
-    public ArrayList<Item> loadItems() throws IOException, JSONException {
-        ArrayList<Item> items = new ArrayList<>();
+    public ArrayList<LocalItem> loadItems() throws IOException, JSONException {
+        ArrayList<LocalItem> localItems = new ArrayList<>();
         BufferedReader reader = null;
         try {
             //Open and read file into StringBuilder
@@ -68,7 +66,7 @@ public class CollectionsManagerJSONSerializer {
             //Parse the JSON using JSONTokener
             JSONArray array = (JSONArray) new JSONTokener(jsonString.toString()).nextValue();
             for (int i = 0; i < array.length(); i++) {
-                items.add(new Item(array.getJSONObject(i)));
+                localItems.add(new LocalItem(array.getJSONObject(i)));
             }
         } catch (FileNotFoundException e) {
             //Ignore
@@ -76,6 +74,6 @@ public class CollectionsManagerJSONSerializer {
             if (reader != null)
                 reader.close();
         }
-        return items;
+        return localItems;
     }
 }

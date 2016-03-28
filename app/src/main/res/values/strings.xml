@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">CollectionsManager</string>
     <string name="title_item_detail">Item Detail</string>
-    <string name="item_name_hint">Enter a name for this item.</string>
+    <string name="item_name_hint">Enter a name for this localItem.</string>
     <string name="item_name_label">Name</string>
     <string name="items_title">Items</string>
     <string name="item_advertised_label">Advertised?</string>

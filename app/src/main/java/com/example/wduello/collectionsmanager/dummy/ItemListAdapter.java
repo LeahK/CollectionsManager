@@ -3,13 +3,11 @@ package com.example.wduello.collectionsmanager.dummy;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.widget.ArrayAdapter;
-import android.widget.ListAdapter;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.ImageView;
 
-import com.example.wduello.collectionsmanager.Item;
+import com.example.wduello.collectionsmanager.LocalItem;
 import com.example.wduello.collectionsmanager.R;
 
 import java.util.List;
@@ -17,14 +15,14 @@ import java.util.List;
 /**
  * Created by kayewrobleski on 3/7/16.
  */
-public class ItemListAdapter extends ArrayAdapter<Item> {
+public class ItemListAdapter extends ArrayAdapter<LocalItem> {
 
     public ItemListAdapter(Context context, int textViewResourceId) {
         super(context, textViewResourceId);
     }
 
-    public ItemListAdapter(Context context, int resource, List<Item> items) {
-        super(context, resource, items);
+    public ItemListAdapter(Context context, int resource, List<LocalItem> localItems) {
+        super(context, resource, localItems);
     }
 
     @Override
@@ -38,7 +36,7 @@ public class ItemListAdapter extends ArrayAdapter<Item> {
             v = vi.inflate(R.layout.item_list_row, null);
         }
 
-        Item p = getItem(position);
+        LocalItem p = getItem(position);
 
         if (p != null) {
             TextView itemTextView = (TextView) v.findViewById(R.id.itemTextView);

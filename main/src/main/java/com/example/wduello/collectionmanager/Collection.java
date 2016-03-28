@@ -17,6 +17,7 @@ public class Collection implements Serializable {
 
     private HashMap<String, Item> mItems;
     protected String mCollectionName;
+    //private UUID mCollectionId;
 
     protected Collection(){}
 

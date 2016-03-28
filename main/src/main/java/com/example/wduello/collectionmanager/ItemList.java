@@ -1,4 +1,4 @@
-package com.example.wduello.collectionsmanager;
+package com.example.wduello.collectionmanager;
 
 import android.content.Context;
 import android.util.Log;
@@ -14,7 +14,8 @@ public class ItemList {
     private static final String TAG = "ItemList";
     private static final String FILENAME = "items.json";
 
-    private ArrayList<Item> mItems;
+
+    private ArrayList<LocalItem> mLocalItems;
     private CollectionsManagerJSONSerializer mSerializer;
 
 
@@ -23,13 +24,13 @@ public class ItemList {
 
     private ItemList(Context appContext) {
         mAppContext = appContext;
-        mItems = new ArrayList<Item>();
+        mLocalItems = new ArrayList<LocalItem>();
         mSerializer = new CollectionsManagerJSONSerializer(mAppContext, FILENAME);
 
         try {
-            mItems = mSerializer.loadItems();
+            mLocalItems = mSerializer.loadItems();
         } catch (Exception e) {
-            mItems = new ArrayList<Item>();
+            mLocalItems = new ArrayList<>();
             Log.e(TAG, "Error loading items", e);
         }
     }
@@ -41,15 +42,15 @@ public class ItemList {
         return sItemList;
     }
 
-    public void addItem(Item i) {
-        mItems.add(i);
+    public void addItem(LocalItem i) {
+        mLocalItems.add(i);
     }
 
-    public void deleteItem(Item i ) { mItems.remove(i); }
+    public void deleteItem(LocalItem i ) { mLocalItems.remove(i); }
 
     public boolean saveItems() {
         try {
-            mSerializer.saveItems(mItems);
+            mSerializer.saveItems(mLocalItems);
             Log.d(TAG, "items saved to file");
             return true;
         } catch (Exception e){
@@ -58,12 +59,12 @@ public class ItemList {
         }
     }
 
-    public ArrayList<Item> getItems() {
-        return mItems;
+    public ArrayList<LocalItem> getLocalItems() {
+        return mLocalItems;
     }
 
-    public Item getItem(UUID id) {
-        for (Item i : mItems) {
+    public LocalItem getItem(UUID id) {
+        for (LocalItem i : mLocalItems) {
             if (i.getId().equals(id))
                 return i;
         }
