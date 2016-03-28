@@ -219,6 +219,7 @@ public class ActivityLogin extends AppCompatActivity implements LoaderCallbacks<
 
                         @Override
                         public void onSuccess() {
+                            mCurrentUser.listenForCollectionChanges();
                             showProgress(false);
                             Intent intent = new Intent(ActivityLogin.this, ActivityCollections.class);
                             startActivity(intent);
@@ -237,39 +238,7 @@ public class ActivityLogin extends AppCompatActivity implements LoaderCallbacks<
                 }
 
                 mCurrentUser = new User(email);
-                Attribute attribute_one = new Attribute("thing_one", "thing_one", "1" );
-                Attribute attribute_two = new Attribute("thing_two", "thing_two", "2");
-                Attribute attribute_three = new Attribute("thing_three", "thing_three", "3");
-                Item item_one = new Item("item_one");
-                Item item_two = new Item("item_two");
-                Item item_three = new Item("item_three");
-                HashMap<String, Attribute> attributes = new HashMap<>();
-                attributes.put("thing_one", attribute_one);
-                attributes.put("thing_two", attribute_two);
-                attributes.put("thing_three", attribute_three);
-
-                item_three.setAttributes(attributes);
-                HashMap<String, Item> items = new HashMap<>();
-                items.put("item_one", item_one);
-                items.put("item_two", item_two);
-                items.put("item_three", item_three);
-
-                Collection collection_one = new Collection("collection_one");
-                Collection collection_two = new Collection("collection_two");
-                Collection collection_three = new Collection("collection_three");
-                collection_one.setItems(items);
-                collection_two.setItems(items);
-                collection_three.setItems(items);
-                HashMap<String, Collection> collections = new HashMap<>();
-
-                collections.put("collection_one", collection_one);
-                collections.put("collection_two", collection_two);
-                collections.put("collection_three", collection_three);
-
-                mCurrentUser.setCollections(collections);
-
                 mCurrentUser.saveUser();
-                mCurrentUser.getUserName();
 
             }
         }

@@ -23,6 +23,7 @@ public class Collection implements Serializable {
     public Collection(String name) {
         mCollectionName = name;
         mItems = new HashMap<String, Item>();
+        listenForItemChanges();
     }
 
     private void listenForItemChanges(){
