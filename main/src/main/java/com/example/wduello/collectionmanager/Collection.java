@@ -13,7 +13,7 @@ import java.util.List;
 /**
  * Created by kayewrobleski on 3/6/16.
  */
-public class Collection extends ActivityLogin implements Serializable {
+public class Collection implements Serializable {
 
     private HashMap<String, Item> mItems;
     protected String mCollectionName;
@@ -30,7 +30,7 @@ public class Collection extends ActivityLogin implements Serializable {
     private void listenForItemChanges(){
 
         String userCollectionRef = "https://collectionsapp.firebaseio.com/users/"
-                + mCurrentUser.getUserName() + "/collections/";
+                + ActivityLogin.mCurrentUser.getUserName() + "/collections/";
         Firebase collectionRef = new Firebase(userCollectionRef);
         Firebase itemRef = collectionRef.child(mCollectionName);
         itemRef.addValueEventListener(new ValueEventListener() {
@@ -71,7 +71,7 @@ public class Collection extends ActivityLogin implements Serializable {
     public void saveCollection() {
 
         String userCollectionRef = "https://collectionsapp.firebaseio.com/users/"
-                + mCurrentUser.getUserName() + "/collections/";
+                + ActivityLogin.mCurrentUser.getUserName() + "/collections/";
         Firebase collectionRef = new Firebase(userCollectionRef).child(mCollectionName);
         collectionRef.setValue(this, new Firebase.CompletionListener() {
             @Override

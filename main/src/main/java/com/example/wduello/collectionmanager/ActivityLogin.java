@@ -36,6 +36,7 @@ import com.firebase.client.FirebaseError;
 import com.firebase.client.FirebaseException;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import static android.Manifest.permission.READ_CONTACTS;
@@ -218,6 +219,7 @@ public class ActivityLogin extends AppCompatActivity implements LoaderCallbacks<
 
                         @Override
                         public void onSuccess() {
+                            mCurrentUser.listenForCollectionChanges();
                             showProgress(false);
                             Intent intent = new Intent(ActivityLogin.this, ActivityCollections.class);
                             startActivity(intent);
@@ -236,6 +238,7 @@ public class ActivityLogin extends AppCompatActivity implements LoaderCallbacks<
                 }
 
                 mCurrentUser = new User(email);
+                mCurrentUser.saveUser();
 
             }
         }

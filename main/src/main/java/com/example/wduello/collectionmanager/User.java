@@ -30,14 +30,13 @@ public class User implements Serializable {
             mCollections = new HashMap<String, Collection>();
             mInstantiated = true;
         }
-        listenForCollectionChanges();
 
     }
 
-    private void listenForCollectionChanges(){
+    public void listenForCollectionChanges(){
 
         String userCollectionRef = "https://collectionsapp.firebaseio.com/users/"
-                + ActivityLogin.mCurrentUser.getUserName() + "/collections/";
+                + this.getUserName() + "/collections/";
         Firebase collectionRef = new Firebase(userCollectionRef);
         collectionRef.addValueEventListener(new ValueEventListener() {
             @Override
@@ -76,9 +75,9 @@ public class User implements Serializable {
 
     public void saveUser() {
 
-        Firebase userRef = new Firebase("https://collectionsapp.firebaseio.com/users");
-        Firebase currentUserRef = userRef.child(mUserName);
-        currentUserRef.setValue(this, new Firebase.CompletionListener() {
+        Firebase userRef = new Firebase("https://collectionsapp.firebaseio.com/users" + "/" + mUserName + "/");
+
+        userRef.setValue(this, new Firebase.CompletionListener() {
             @Override
             public void onComplete(FirebaseError firebaseError, Firebase firebase) {
                 if (firebaseError != null) {
