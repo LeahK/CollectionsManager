@@ -17,7 +17,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class AddCollection extends AppCompatActivity
+public class ActivityAddCollection extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     @Override
@@ -143,16 +143,16 @@ public class AddCollection extends AppCompatActivity
 
         if (id == R.id.nav_collections) {
             // @TODO --> placeholder for new intent ... redirect to myCollections page
-            Toast.makeText(AddCollection.this, "MY COLLECTIONS!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(ActivityAddCollection.this, "MY COLLECTIONS!", Toast.LENGTH_SHORT).show();
         } else if (id == R.id.nav_advertisements) {
             // @TODO --> placeholder for new intent ... redirect to myAdvertisements page
-            Toast.makeText(AddCollection.this, "MY ADVERTISEMENTS!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(ActivityAddCollection.this, "MY ADVERTISEMENTS!", Toast.LENGTH_SHORT).show();
         } else if (id == R.id.nav_soldItems) {
 // @TODO --> placeholder for new intent ... redirect to mySoldItems page
-            Toast.makeText(AddCollection.this, "MY SOLD ITEMS!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(ActivityAddCollection.this, "MY SOLD ITEMS!", Toast.LENGTH_SHORT).show();
         } else if (id == R.id.nav_search) {
 // @TODO --> placeholder for new intent ... redirect to search page
-            Toast.makeText(AddCollection.this, "SEARCH!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(ActivityAddCollection.this, "SEARCH!", Toast.LENGTH_SHORT).show();
         }
 
 

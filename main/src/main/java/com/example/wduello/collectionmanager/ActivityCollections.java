@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -12,7 +13,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
@@ -22,7 +22,7 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 
-public class MainAdvertisementsPage extends AppCompatActivity
+public class ActivityCollections extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     //*************************
@@ -31,7 +31,7 @@ public class MainAdvertisementsPage extends AppCompatActivity
 
     // this ArrayList will store the IDs for the image thumbnails
     // these thumbnails will populate the gridView on the collections page
-    private ArrayList<Integer> mAdvertisementsThumbIds = new ArrayList<Integer>();
+    private ArrayList<Integer> mCollectionsThumbIds = new ArrayList<Integer>();
 
 
     @Override
@@ -90,7 +90,7 @@ public class MainAdvertisementsPage extends AppCompatActivity
     public void populateThumbnails(Integer imageResourceId){
 
         // add a new thumbnail to the list
-        mAdvertisementsThumbIds.add(imageResourceId);
+        mCollectionsThumbIds.add(imageResourceId);
     }
 
     public class GridViewAdapter extends BaseAdapter{
@@ -104,12 +104,12 @@ public class MainAdvertisementsPage extends AppCompatActivity
         // how many views are we populating?
         @Override
         public int getCount() {
-            return mAdvertisementsThumbIds.size();
+            return mCollectionsThumbIds.size();
         }
 
         @Override
         public Object getItem(int arg0){
-            return mAdvertisementsThumbIds.get(arg0);
+            return mCollectionsThumbIds.get(arg0);
         }
 
         @Override
@@ -129,17 +129,17 @@ public class MainAdvertisementsPage extends AppCompatActivity
             // create an image button
             ImageButton imageButton = (ImageButton) view.findViewById(R.id.imageButton_thumbnail);
 
-            // set the image thumbnail to the one from mAdvertisementsThumbIds
+            // set the image thumbnail to the one from mCollectionsThumbIds
             // @TODO add some logic where if the object is a collection, make the button a
             // @TODO --- folder icon
-            imageButton.setImageResource(mAdvertisementsThumbIds.get(position));
+            imageButton.setImageResource(mCollectionsThumbIds.get(position));
 
             // create an onClickListener for the image
             imageButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v){
                     // @TODO --> DEBUG placeholder for eventual new intent (redirect to item/collection page)
-                    Toast.makeText(MainAdvertisementsPage.this, "Clicked image!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ActivityCollections.this, "Clicked image!", Toast.LENGTH_SHORT).show();
                 }
             });
 
@@ -148,7 +148,7 @@ public class MainAdvertisementsPage extends AppCompatActivity
 
             // set the text to the name of the collection or item
             // @TODO --> replace with actual text
-            collection_or_item_name.setText("Advertisement");
+            collection_or_item_name.setText("Placeholder");
 
                     // when done setting all the text and shtuff
                     // return the view
@@ -196,19 +196,18 @@ public class MainAdvertisementsPage extends AppCompatActivity
 
         if (id == R.id.nav_collections) {
             // @TODO --> placeholder for new intent ... redirect to myCollections page
-            Intent mainCollectionsPage = new Intent(this, MainAdvertisementsPage.class);
-            Toast.makeText(MainAdvertisementsPage.this, "MY COLLECTIONS!", Toast.LENGTH_SHORT).show();
-            startActivity(mainCollectionsPage);
+            Toast.makeText(ActivityCollections.this, "MY COLLECTIONS!", Toast.LENGTH_SHORT).show();
         } else if (id == R.id.nav_advertisements) {
             // @TODO --> placeholder for new intent ... redirect to myAdvertisements page
-            // do nothing
-            Toast.makeText(MainAdvertisementsPage.this, "MY ADVERTISEMENTS!", Toast.LENGTH_SHORT).show();
+            Intent mainAdvertisementsPage = new Intent(this, ActivityAdvertisements.class);
+            Toast.makeText(ActivityCollections.this, "MY ADVERTISEMENTS!", Toast.LENGTH_SHORT).show();
+            startActivity(mainAdvertisementsPage);
         } else if (id == R.id.nav_soldItems) {
 // @TODO --> placeholder for new intent ... redirect to mySoldItems page
-            Toast.makeText(MainAdvertisementsPage.this, "MY SOLD ITEMS!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(ActivityCollections.this, "MY SOLD ITEMS!", Toast.LENGTH_SHORT).show();
         } else if (id == R.id.nav_search) {
 // @TODO --> placeholder for new intent ... redirect to search page
-            Toast.makeText(MainAdvertisementsPage.this, "SEARCH!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(ActivityCollections.this, "SEARCH!", Toast.LENGTH_SHORT).show();
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
