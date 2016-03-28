@@ -1,39 +1,25 @@
-package com.example.wduello.collectionsmanager;
+package com.example.wduello.collectionmanager;
 
-import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
-import android.gesture.Gesture;
-import android.gesture.GestureOverlayView;
-import android.os.Build;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ListFragment;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.ActionBarActivity;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.ContextMenu;
-import android.view.GestureDetector;
-import android.view.GestureDetector.SimpleOnGestureListener;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.MotionEvent;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.ListView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
-import android.support.v7.widget.Toolbar;
 
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 /**
@@ -42,19 +28,21 @@ import java.util.ArrayList;
 public class ItemListFragment extends ListFragment {
 
     private static final String TAG = "ItemListFragment";
+    public static final String EXTRA_COLLECTION_ID = "com.example.wduello.collectionmanager.collection_id";
 
-    private ArrayList<Item> mItems;
-
-    public static final int REQUEST_DELETE_ITEM = 2;
+    private ArrayList<LocalItem> mLocalItems;
+    protected int mCollectionId;
 
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
-        getActivity().setTitle(R.string.items_title);
-        mItems = ItemList.get(getActivity()).getItems();
-        ItemAdapter adapter = new ItemAdapter(mItems);
+        //getActivity().setTitle(R.string.items_title);
+        Bundle args = getActivity().getIntent().getExtras();
+        mCollectionId = args.getInt(ItemListFragment.EXTRA_COLLECTION_ID);
+        mLocalItems = ItemList.get(getActivity()).getLocalItems();
+        ItemAdapter adapter = new ItemAdapter(mLocalItems);
         setListAdapter(adapter);
     }
 
@@ -67,13 +55,14 @@ public class ItemListFragment extends ListFragment {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //Create new item
-                Item item = new Item();
-                ItemList.get(getActivity()).addItem(item);
+                //Create new localItem
+                LocalItem localItem = new LocalItem();
+                localItem.setCollectionId(mCollectionId);
+                ItemList.get(getActivity()).addItem(localItem);
 
                 //Start ItemActivity
                 Intent i = new Intent(getActivity(), ItemActivity.class);
-                i.putExtra(ItemFragment.EXTRA_ITEM_ID, item.getId());
+                i.putExtra(ItemFragment.EXTRA_ITEM_ID, localItem.getId());
                 startActivity(i);
             }
         });
@@ -86,23 +75,20 @@ public class ItemListFragment extends ListFragment {
 
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
-        Item item = ((ItemAdapter)getListAdapter()).getItem(position);
-        Log.d(TAG, item.getName() + " was clicked");
+        LocalItem localItem = ((ItemAdapter)getListAdapter()).getItem(position);
+        Log.d(TAG, localItem.getName() + " was clicked");
 
         //Start ItemActivity
         Intent i = new Intent(getActivity(), ItemActivity.class);
-        i.putExtra(ItemFragment.EXTRA_ITEM_ID, item.getId());
+        i.putExtra(ItemFragment.EXTRA_ITEM_ID, localItem.getId());
         startActivity(i);
     }
 
 
-    private class ItemAdapter extends ArrayAdapter<Item> {
+    private class ItemAdapter extends ArrayAdapter<LocalItem> {
 
-        private ViewPager mViewPager;
-
-
-        public ItemAdapter(ArrayList<Item> items) {
-            super(getActivity(), 0, items);
+        public ItemAdapter(ArrayList<LocalItem> localItems) {
+            super(getActivity(), 0, localItems);
         }
 
         @Override
@@ -113,16 +99,20 @@ public class ItemListFragment extends ListFragment {
                         .inflate(R.layout.custom_list_item, null);
             }
 
-            //Configure view for this item
-            Item item = getItem(position);
+            //Configure view for this localItem
+            LocalItem localItem = getItem(position);
 
-            TextView nameTextView = (TextView) convertView.findViewById(R.id.custom_list_item_nameTextView);
-            nameTextView.setText(item.getName());
+            if (localItem.getCollectionId() == mCollectionId) {
 
-            CheckBox advertisedCheckBox = (CheckBox)convertView.findViewById(R.id.custom_list_item_advertisedCheckBox);
-            advertisedCheckBox.setChecked(item.isAdvertised());
+                TextView nameTextView = (TextView) convertView.findViewById(R.id.custom_list_item_nameTextView);
+                nameTextView.setText(localItem.getName());
 
-            return convertView;
+                CheckBox advertisedCheckBox = (CheckBox) convertView.findViewById(R.id.custom_list_item_advertisedCheckBox);
+                advertisedCheckBox.setChecked(localItem.isAdvertised());
+
+                return convertView;
+            }
+            return null;
         }
     }
 
@@ -132,6 +122,7 @@ public class ItemListFragment extends ListFragment {
         super.onResume();
         ((ItemAdapter) getListAdapter()).notifyDataSetChanged();
     }
+
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
@@ -150,11 +141,11 @@ public class ItemListFragment extends ListFragment {
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)menuItem.getMenuInfo();
         int position = info.position;
         ItemAdapter adapter = (ItemAdapter)getListAdapter();
-        Item item = adapter.getItem(position);
+        LocalItem localItem = adapter.getItem(position);
 
         switch (menuItem.getItemId()) {
             case R.id.menu_item_delete:
-                ItemList.get(getActivity()).deleteItem(item);
+                ItemList.get(getActivity()).deleteItem(localItem);
                 adapter.notifyDataSetChanged();
                 return true;
         }

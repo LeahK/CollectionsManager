@@ -20,4 +20,9 @@
         completions."
     </string>
     <string name="title_activity_add_collection">AddCollection</string>
+    <string name="item_name_label">Name</string>
+    <string name="item_name_hint">Enter an item name.</string>
+    <string name="item_advertised_label">Advertised?</string>
+    <string name="delete_item">Delete</string>
+    <string name="title_activity_item">Items</string>
 </resources>

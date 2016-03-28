@@ -17,6 +17,7 @@ public class Collection extends ActivityLogin implements Serializable {
 
     private HashMap<String, Item> mItems;
     protected String mCollectionName;
+    //private UUID mCollectionId;
 
     protected Collection(){}
 

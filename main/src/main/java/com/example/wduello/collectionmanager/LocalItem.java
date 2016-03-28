@@ -1,4 +1,4 @@
-package com.example.wduello.collectionsmanager;
+package com.example.wduello.collectionmanager;
 
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -13,7 +13,7 @@ import java.util.UUID;
 /**
  * Created by kayewrobleski on 3/6/16.
  */
-public class Item {
+public class LocalItem {
 
     //JSON object fields
     private static final String JSON_ID = "id";
@@ -31,12 +31,12 @@ public class Item {
     private ArrayList<Attribute> mAttributes;
     private boolean mAdvertised;
 
-    public Item() {
+    public LocalItem() {
         //Generate item with name
         mId = UUID.randomUUID();
     }
 
-    //Convert Item object to JSON object
+    //Convert LocalItem object to JSON object
     public JSONObject toJSON() throws JSONException {
         JSONObject json = new JSONObject();
         json.put(JSON_ID, mId.toString());
@@ -55,8 +55,8 @@ public class Item {
         return json;
     }
 
-    //Create Item object from JSON object
-    public Item(JSONObject json) throws JSONException {
+    //Create LocalItem object from JSON object
+    public LocalItem(JSONObject json) throws JSONException {
         mId = UUID.fromString(json.getString(JSON_ID));
         mCollectionId = json.getInt(JSON_COLLECTION_ID);
         if (json.has(JSON_NAME)) {
