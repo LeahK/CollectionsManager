@@ -12,27 +12,25 @@
     tools:context=".ActivityAddCollection"
     tools:showIn="@layout/add_collection_app_bar">
 
-    <TextView
+    <EditText
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="collectionName"
         android:id="@+id/collectionName"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:textSize="20dp" />
+        android:text="collection name" />
 
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/collectionThumbnail"
-        android:layout_marginTop="20dp"
         android:minHeight="150dp"
         android:minWidth="150dp"
-        android:layout_below="@+id/collectionName"
-        android:layout_centerHorizontal="true"
         android:maxHeight="150dp"
         android:maxWidth="150dp"
-        android:background="#dcdada" />
+        android:background="#dcdada"
+        android:layout_below="@+id/collectionName"
+        android:layout_centerHorizontal="true" />
 
     <ImageButton
         android:layout_width="wrap_content"
@@ -45,12 +43,13 @@
         android:maxWidth="50dp"
         android:minHeight="50dp"
         android:minWidth="50dp"
-        android:background="#494242" />
+        android:background="#494242"
+        android:src="@drawable/ic_menu_camera"/>
 
     <ListView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/listView"
+        android:id="@+id/listView_fields"
         android:layout_below="@+id/collectionThumbnail"
         android:layout_marginTop="20dp"
         android:layout_alignParentRight="true"
@@ -93,7 +92,7 @@
         android:layout_alignParentRight="false"
         android:maxWidth="50dp"
         android:minWidth="90dp"
-        android:layout_alignRight="@+id/listView"
+        android:layout_alignRight="@+id/listView_fields"
         android:layout_alignBottom="@+id/saveCollectionButton"
         android:layout_marginBottom="60dp"
         android:layout_marginRight="20dp" />

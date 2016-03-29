@@ -1,8 +1,11 @@
 package com.example.wduello.collectionmanager;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -12,14 +15,32 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.BaseAdapter;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.GridView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.ListView;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.ArrayList;
+
 public class ActivityAddCollection extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+
+
+    //*************************
+    // Variables
+    //*************************
+
+    // this ArrayList will store the field ids
+    private ArrayList<Integer> mCollectionsThumbIds = new ArrayList<Integer>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,17 +54,12 @@ public class ActivityAddCollection extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-//        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-//        fab.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-//                        .setAction("Action", null).show();
-//            }
-//        });
+        //*************************
+        // BUTTONS
+        //*************************
 
-        // create the collection name textView
-        TextView collectionName = (TextView) findViewById(R.id.collectionName);
+        // create the collection name editText
+        final EditText collectionName = (EditText) findViewById(R.id.collectionName);
 
         // create the collection thumbnail image
         ImageView collectionThumbnail = (ImageView) findViewById(R.id.collectionThumbnail);
@@ -51,21 +67,95 @@ public class ActivityAddCollection extends AppCompatActivity
         // create the camera button - used to switch to camera service
         ImageButton useCamera = (ImageButton) findViewById(R.id.takePictureButton);
 
+        // create the add new field button
+        Button addFieldButton = (Button) findViewById(R.id.addFieldButton);
+
+        // @TODO -- implement this later
+        addFieldButton.setVisibility(View.INVISIBLE);
+
+        // create the save button
+        Button saveCollectionButton = (Button) findViewById(R.id.saveCollectionButton);
+
+        // create the cancel button
+        Button cancelCollectionButton = (Button) findViewById(R.id.cancelCollectionButton);
+
+        //*************************
+        // ListView
+        //*************************
+
+//        ListView listView = (ListView) findViewById(R.id.listView_fields);
+//        final ListViewAdapter listViewAdapter = new ListViewAdapter(this);
+//        listView.setAdapter(listViewAdapter);
+//
+//        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//            @Override
+//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+//                // redirect to itemDetail view
+//                Intent itemDetailIntent = getPackageManager().getLaunchIntentForPackage("com.example.wduello.collectionsmanager");
+//                startActivity(itemDetailIntent);
+//            }
+//        });
+
+        //*************************
+        // LISTENERS
+        //*************************
+
+        addFieldButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+//                // this should add a spinner
+//                Spinner spinner = (Spinner) findViewById(R.id.spinner_field_type);
+//
+//                // Create an ArrayAdapter using the string array and a default spinner layout
+//                ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getApplicationContext(),
+//                        R.array.field_types, android.R.layout.simple_spinner_item);
+//
+//                // Specify the layout to use when the list of choices appears
+//                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+//
+//                // Apply the adapter to the spinner
+//                spinner.setAdapter(adapter);
+            }
+        });
+
+        saveCollectionButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // get the collectionName
+                CharSequence string = collectionName.getText();
+
+                // @TODO -- get the current thumbnail, and save it
+
+                // @TODO -- this information will need to be transferred to server
+
+                // after we're done, finish
+                finish();
+            }
+        });
+
+        cancelCollectionButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // this should just take the user back to the previous page
+                finish();
+            }
+        });
+
         //*************************
         // BEGIN CAMERA SERVICE
         //*************************
 
         // the on-click listener for this button will transition to the camera service
-        //useCamera.setOnClickListener(...);
+        useCamera.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // when you click the camera button, it should open camera service
+                dispatchTakePictureIntent();
+            }
+        });
 
         // the image taken in the camera view will need to be saved, and then appear as the
         // thumbnail of the collection
-
-        //*************************
-        // FIELD LIST VIEW
-        //*************************
-
-
 
         //*************************
         // SIDEBAR
@@ -85,24 +175,58 @@ public class ActivityAddCollection extends AppCompatActivity
     // METHODS
     //*************************
 
+    static final int REQUEST_IMAGE_CAPTURE = 1;
+
+    private void dispatchTakePictureIntent() {
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+            startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
+            Bundle extras = data.getExtras();
+            Bitmap imageBitmap = (Bitmap) extras.get("data");
+            ImageView imageView = (ImageView) findViewById(R.id.collectionThumbnail);
+            imageView.setImageBitmap(imageBitmap);
+
+            // @TODO -- currently this image is not saved anywhere
+            // @TODO -- it will eventually need to be saved to the server
+        }
+    }
+
     //*************************
     // FIELD LIST VIEW
     //*************************
 
+    // the list view adapter will go here
+
     // the FieldSpinnerActivity class will allow us to react based on which field TYPE the
     // user has chosen from the drop-down
-    public class FieldSpinnerActivity extends Activity implements AdapterView.OnItemSelectedListener {
 
-        public void onItemSelected(AdapterView<?> parent, View view,
-                                   int pos, long id) {
-            // An item was selected. You can retrieve the selected item using
-            // parent.getItemAtPosition(pos)
-        }
+//    public class FieldSpinnerActivity extends Activity implements AdapterView.OnItemSelectedListener {
+//
+//        public void onItemSelected(AdapterView<?> parent, View view,
+//                                   int pos, long id) {
+//            // An item was selected. You can retrieve the selected item using
+//            // parent.getItemAtPosition(pos)
+//            if (parent.getItemAtPosition(pos) == "Price"){
+//
+//            }
+//            if (parent.getItemAtPosition(pos) == "Date"){
+//
+//            }
+//            if (parent.getItemAtPosition(pos) == "Text"){
+//
+//            }
+//        }
 
-        public void onNothingSelected(AdapterView<?> parent) {
-            // Another interface callback
-        }
-    }
+//        public void onNothingSelected(AdapterView<?> parent) {
+//            // Another interface callback
+//        }
+//    }
 
     @Override
     public void onBackPressed() {
