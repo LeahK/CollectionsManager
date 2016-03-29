@@ -7,6 +7,7 @@ import com.firebase.client.FirebaseError;
 import com.firebase.client.ValueEventListener;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
@@ -62,6 +63,12 @@ public class User implements Serializable {
 
     public HashMap<String, Collection> getCollections() {
         return mCollections;
+    }
+
+    public ArrayList<Collection> getCollectionsArrayList(){
+        ArrayList<Collection> collections = new ArrayList<>(mCollections.values());
+        return collections;
+
     }
 
     public void setCollections(HashMap<String, Collection> mCollections) {

@@ -1,4 +1,4 @@
-package com.example.wduello.collectionsmanager;
+package com.example.wduello.collectionmanager;
 
 import android.content.Context;
 import android.util.Log;
@@ -14,6 +14,7 @@ public class ItemList {
     private static final String TAG = "ItemList";
     private static final String FILENAME = "items.json";
 
+
     private ArrayList<Item> mItems;
     private CollectionsManagerJSONSerializer mSerializer;
 
@@ -26,12 +27,13 @@ public class ItemList {
         mItems = new ArrayList<Item>();
         mSerializer = new CollectionsManagerJSONSerializer(mAppContext, FILENAME);
 
+        /*
         try {
-            mItems = mSerializer.loadItems();
+            mLocalItems = mSerializer.loadItems();
         } catch (Exception e) {
-            mItems = new ArrayList<Item>();
+            mLocalItems = new ArrayList<>();
             Log.e(TAG, "Error loading items", e);
-        }
+        } */
     }
 
     public static ItemList get(Context c) {
@@ -46,19 +48,20 @@ public class ItemList {
     }
 
     public void deleteItem(Item i ) { mItems.remove(i); }
-
+/*
     public boolean saveItems() {
+        /*
         try {
-            mSerializer.saveItems(mItems);
+            mSerializer.saveItems(mLocalItems);
             Log.d(TAG, "items saved to file");
             return true;
         } catch (Exception e){
             Log.e(TAG, "Error saving crimes: ", e);
             return false;
         }
-    }
+    } */
 
-    public ArrayList<Item> getItems() {
+    public ArrayList<Item> getLocalItems() {
         return mItems;
     }
 

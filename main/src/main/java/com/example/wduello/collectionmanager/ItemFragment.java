@@ -1,12 +1,10 @@
-package com.example.wduello.collectionsmanager;
+package com.example.wduello.collectionmanager;
 
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.location.Criteria;
-import android.media.Image;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -19,7 +17,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
@@ -45,8 +42,10 @@ public class ItemFragment extends Fragment {
     private ImageView mPhotoView;
     private String mCurrentPhotoPath;
     private FloatingActionButton mDeleteButton;
+    private int mCollectionId;
 
     private OnFragmentInteractionListener mListener;
+
 
     public ItemFragment() {
         // Required empty public constructor
@@ -55,6 +54,9 @@ public class ItemFragment extends Fragment {
     public static ItemFragment newInstance(UUID itemId) {
         Bundle args = new Bundle();
         args.putSerializable(EXTRA_ITEM_ID, itemId);
+
+        //mCollectionId = collectionId;
+        //args.putSerializable(EXTRA_COLLECTION_ID, collectionId);
 
         ItemFragment fragment = new ItemFragment();
         fragment.setArguments(args);
@@ -98,7 +100,7 @@ public class ItemFragment extends Fragment {
             Bitmap bitmap = BitmapFactory.decodeFile(photoFile.getAbsolutePath());
             //mPhotoView = (ImageView)v.findViewById(R.id.item_image);
             mPhotoView.setImageBitmap(bitmap);
-            mItem.setPhoto(mCurrentPhotoPath);
+            mItem.setPhotoPath(mCurrentPhotoPath);
         }
     }
 
@@ -107,6 +109,8 @@ public class ItemFragment extends Fragment {
         super.onCreate(savedInstanceState);
         UUID itemId = (UUID)getArguments().getSerializable(EXTRA_ITEM_ID);
         mItem = ItemList.get(getActivity()).getItem(itemId);
+        //Bundle args = getActivity().getIntent().getExtras();
+        //mCollectionId = args.getInt(ItemListFragment.EXTRA_COLLECTION_ID);
     }
 
     @Override
@@ -116,12 +120,12 @@ public class ItemFragment extends Fragment {
         View v = inflater.inflate(R.layout.fragment_item, container, false);
 
         mNameField = (EditText)v.findViewById(R.id.item_name);
-        mNameField.setText(mItem.getName());
+        mNameField.setText(mItem.getItemName());
         mNameField.addTextChangedListener(new TextWatcher() {
             @Override
             public void onTextChanged(
                     CharSequence c, int start, int before, int count) {
-                mItem.setName(c.toString());
+                mItem.setItemName(c.toString());
             }
 
             @Override
@@ -147,7 +151,7 @@ public class ItemFragment extends Fragment {
 
 
         mPhotoView = (ImageView) v.findViewById(R.id.item_image);
-        //mCurrentPhotoPath = mItem.getPhotoPath();
+        //mCurrentPhotoPath = mLocalItem.getPhotoPath();
         if (mItem.getPhotoPath() != null) {
             mCurrentPhotoPath = mItem.getPhotoPath();
             setPhoto();
@@ -163,7 +167,7 @@ public class ItemFragment extends Fragment {
         mDeleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ItemList.get(getActivity()).deleteItem(mItem);
+                //ItemList.get(getActivity()).deleteItem(mItem);
                 getActivity().finish();
             }
         });
@@ -192,7 +196,7 @@ public class ItemFragment extends Fragment {
     public void onPause() {
         super.onPause();
         Log.d(TAG, "OnPause() called");
-        ItemList.get(getActivity()).saveItems();
+        //ItemList.get(getActivity()).saveItems();
     }
 
     @Override

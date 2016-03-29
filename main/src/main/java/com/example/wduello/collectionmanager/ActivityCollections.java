@@ -23,6 +23,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public class ActivityCollections extends AppCompatActivity
@@ -88,9 +89,11 @@ public class ActivityCollections extends AppCompatActivity
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                // redirect to itemDetail view
-                Intent itemDetailIntent = getPackageManager().getLaunchIntentForPackage("com.example.wduello.collectionsmanager");
-                startActivity(itemDetailIntent);
+                // redirect to ItemListActivity in app folder
+                Intent itemListIntent = new Intent(getApplicationContext(), ItemListActivity.class);
+                int collectionId = mCollectionsThumbIds.get(position);
+                itemListIntent.putExtra(ItemListFragment.EXTRA_COLLECTION_ID, collectionId);
+                startActivity(itemListIntent);
             }
         });
 
@@ -122,10 +125,13 @@ public class ActivityCollections extends AppCompatActivity
 
     public class GridViewAdapter extends BaseAdapter{
 
+
         private Context mContext;
+        private ArrayList<Collection> mCollections;
 
         public GridViewAdapter(Context c){
             mContext = c;
+            //mCollections = collections;
         }
 
         // how many views are we populating?

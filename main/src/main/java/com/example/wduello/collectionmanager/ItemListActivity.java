@@ -1,4 +1,4 @@
-package com.example.wduello.collectionsmanager;
+package com.example.wduello.collectionmanager;
 
 import android.content.Intent;
 import android.support.design.widget.FloatingActionButton;

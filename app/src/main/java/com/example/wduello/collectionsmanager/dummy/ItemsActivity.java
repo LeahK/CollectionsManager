@@ -12,7 +12,7 @@ import android.content.Intent;
 
 import com.example.wduello.collectionsmanager.Attribute;
 import com.example.wduello.collectionsmanager.CollectionsManagerJSONSerializer;
-import com.example.wduello.collectionsmanager.Item;
+import com.example.wduello.collectionsmanager.LocalItem;
 import com.example.wduello.collectionsmanager.R;
 
 import java.util.ArrayList;
@@ -25,31 +25,31 @@ public class ItemsActivity extends AppCompatActivity {
 
     public static final int REQUEST_ITEM_DETAILS = 1;
 
-    private ArrayList<Item> mItems;
+    private ArrayList<LocalItem> mLocalItems;
     private CollectionsManagerJSONSerializer mSerializer;
 
     private ListView mItemListView;
-    private Item mItem;
+    private LocalItem mLocalItem;
 
     private void populuateItemList() {
 
-        mItems = new ArrayList<>();
+        mLocalItems = new ArrayList<>();
 
         for (int i=0; i<3; i++) {
-            mItem = new Item();
-            mItem.setCollectionId(0);
-            mItem.setName("Item" + i);
-            mItems.add(mItem);
+            mLocalItem = new LocalItem();
+            mLocalItem.setCollectionId(0);
+            mLocalItem.setName("LocalItem" + i);
+            mLocalItems.add(mLocalItem);
         }
         /*
         try {
-            mItems = mSerializer.loadItems();
+            mLocalItems = mSerializer.loadItems();
         } catch (Exception e) {
-            mItems = new ArrayList();
+            mLocalItems = new ArrayList();
             Log.e(TAG, "Error loading items: ", e);
         }
         */
-        ItemListAdapter adapter = new ItemListAdapter(this, R.layout.item_list_row, mItems);
+        ItemListAdapter adapter = new ItemListAdapter(this, R.layout.item_list_row, mLocalItems);
         mItemListView.setAdapter(adapter);
     }
 
@@ -71,7 +71,7 @@ public class ItemsActivity extends AppCompatActivity {
                 Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
                         */
-                //Item item = new Item();
+                //LocalItem item = new LocalItem();
                 //UUID id = item.getId();
                 Intent itemDetailIntent = new Intent(ItemsActivity.this, ItemDetailActivity.class);
                 //itemDetailIntent.putExtra(ItemDetailActivity.EXTRA_ITEM_ID, id);
@@ -79,10 +79,10 @@ public class ItemsActivity extends AppCompatActivity {
             }
         });
 
-        ArrayList<Item> items = new ArrayList<>();
-        Item i1 = new Item();
-        i1.setName("Item 1");
-        items.add(i1);
+        ArrayList<LocalItem> localItems = new ArrayList<>();
+        LocalItem i1 = new LocalItem();
+        i1.setName("LocalItem 1");
+        localItems.add(i1);
 
         mItemListView = (ListView) findViewById(R.id.items_list);
         populuateItemList();
@@ -90,9 +90,9 @@ public class ItemsActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> a, View v, int position, long id) {
                 Object o = mItemListView.getItemAtPosition(position);
-                Item item = (Item) o;
+                LocalItem localItem = (LocalItem) o;
                 Intent itemDetailIntent = new Intent(ItemsActivity.this, ItemDetailActivity.class);
-                itemDetailIntent.putExtra(ItemDetailActivity.EXTRA_ITEM_ID, item.getId().toString());
+                itemDetailIntent.putExtra(ItemDetailActivity.EXTRA_ITEM_ID, localItem.getId().toString());
                 startActivityForResult(itemDetailIntent, REQUEST_ITEM_DETAILS);
             }
         });
@@ -101,23 +101,23 @@ public class ItemsActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_ITEM_DETAILS && resultCode == RESULT_OK) {
-            if (mItems.size() == 0) {
-                mItem = new Item();
-                mItems.add(mItem);
+            if (mLocalItems.size() == 0) {
+                mLocalItem = new LocalItem();
+                mLocalItems.add(mLocalItem);
             } else {
                 //Update item in array list
-                for (Item item : mItems) {
-                    if (item.getId() == mItem.getId()) {
-                        mItem = item;
+                for (LocalItem localItem : mLocalItems) {
+                    if (localItem.getId() == mLocalItem.getId()) {
+                        mLocalItem = localItem;
                     }
                 }
             }
-            mItem.setName(data.getStringExtra(ItemDetailActivity.EXTRA_ITEM_NAME));
-            //mItem.setCollectionId(data.getIntExtra(EXTRA_ITEM_COLLECTION));
+            mLocalItem.setName(data.getStringExtra(ItemDetailActivity.EXTRA_ITEM_NAME));
+            //mLocalItem.setCollectionId(data.getIntExtra(EXTRA_ITEM_COLLECTION));
             //Photo photo = new Photo(data.getStringExtra(ItemDetailActivity.EXTRA_ITEM_PHOTO));
-            //mItem.setPhoto(photo);
+            //mLocalItem.setPhoto(photo);
             ArrayList<Attribute> attributes = (ArrayList<Attribute>)(data.getSerializableExtra(ItemDetailActivity.EXTRA_ITEM_ATTRIBUTES));
-            mItem.setAttributes(attributes);
+            mLocalItem.setAttributes(attributes);
             /*
             boolean saveSuccessful = saveItems();
             if (saveSuccessful) {
