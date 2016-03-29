@@ -18,6 +18,7 @@ public class Collection implements Serializable {
 
     private HashMap<String, Item> mItems;
     protected String mCollectionName;
+    private String mPhotoPath;
     private UUID mCollectionId;
 
 
@@ -27,6 +28,7 @@ public class Collection implements Serializable {
 
     public Collection(String name) {
         mCollectionName = name;
+        mPhotoPath = null;
         mItems = new HashMap<String, Item>();
         listenForItemChanges();
     }
@@ -71,6 +73,14 @@ public class Collection implements Serializable {
 
     public void setItems(HashMap<String, Item> mItems) {
         this.mItems = mItems;
+    }
+
+    public String getPhotoPath() {
+        return mPhotoPath;
+    }
+
+    public void setPhotoPath(String photoPath ) {
+        this.mPhotoPath = photoPath;
     }
 
     public String getCollectionName() {
