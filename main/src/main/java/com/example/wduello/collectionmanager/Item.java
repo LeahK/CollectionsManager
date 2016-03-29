@@ -6,6 +6,7 @@ import com.firebase.client.FirebaseError;
 import com.firebase.client.ValueEventListener;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
@@ -37,11 +38,12 @@ public class Item extends Collection implements Serializable {
                 System.out.println("There are " + snapshot.getChildrenCount() + " collections");
                 for (DataSnapshot attributeSnapshot : snapshot.getChildren()) {
                     Attribute attribute = attributeSnapshot.getValue(Attribute.class);
-                    if (!mAttributes.containsKey(attribute.getAttributeName())){
+                    if (!mAttributes.containsKey(attribute.getAttributeName())) {
                         mAttributes.put(attribute.getAttributeName(), attribute);
                     }
                 }
             }
+
             @Override
             public void onCancelled(FirebaseError firebaseError) {
                 System.out.println("The read failed: " + firebaseError.getMessage());
@@ -51,6 +53,11 @@ public class Item extends Collection implements Serializable {
 
     public HashMap<String, Attribute> getAttributes() {
         return mAttributes;
+    }
+
+    public ArrayList<Attribute> getAttributesArrayList() {
+        ArrayList<Attribute> attributes = new ArrayList<>(mAttributes.values());
+        return attributes;
     }
 
     public void setAttributes(HashMap<String, Attribute> mAttributes) {

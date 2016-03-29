@@ -39,11 +39,12 @@ public class Collection implements Serializable {
                 System.out.println("There are " + snapshot.getChildrenCount() + " collections");
                 for (DataSnapshot itemSnapshot : snapshot.getChildren()) {
                     Item item = itemSnapshot.getValue(Item.class);
-                    if (!mItems.containsKey(item.getItemName())){
+                    if (!mItems.containsKey(item.getItemName())) {
                         mItems.put(item.getItemName(), item);
                     }
                 }
             }
+
             @Override
             public void onCancelled(FirebaseError firebaseError) {
                 System.out.println("The read failed: " + firebaseError.getMessage());
@@ -53,6 +54,11 @@ public class Collection implements Serializable {
 
     public HashMap<String, Item> getItems() {
         return mItems;
+    }
+
+    public ArrayList<Item> getItemsArrayList() {
+        ArrayList<Item> items = new ArrayList<Item>(mItems.values());
+        return items;
     }
 
     public void setItems(HashMap<String, Item> mItems) {
