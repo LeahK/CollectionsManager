@@ -32,7 +32,7 @@ public class ItemListFragment extends ListFragment {
     public static final String EXTRA_COLLECTION_ID = "com.example.wduello.collectionmanager.collection_id";
 
     private ArrayList<Item> mItems;
-    private UUID mCollectionId;
+    private Collection mCurrentCollection;
 
 
     @Override
@@ -41,12 +41,30 @@ public class ItemListFragment extends ListFragment {
         setHasOptionsMenu(true);
         //getActivity().setTitle(R.string.items_title);
         Bundle args = getActivity().getIntent().getExtras();
-        mCollectionId = (UUID)args.getSerializable(EXTRA_COLLECTION_ID);
-        Collection collection = CollectionList.get(getActivity()).getCollection(mCollectionId);
-        mItems = collection.getItemsArrayList();
+        UUID collectionId = (UUID)args.getSerializable(EXTRA_COLLECTION_ID);
+        //Collection collection = CollectionList.get(getActivity()).getCollection(mCollectionId);
+
+
+        //Get collection based on collection ID
+        ArrayList<Collection> collections = ActivityLogin.mCurrentUser.getCollectionsArrayList();
+        for (Collection c: collections) {
+            if (c.getCollectionId() == collectionId) {
+                mCurrentCollection = c;
+                break;
+            }
+        }
+        //mCurrentCollection = new Collection();
+        //mItems = mCurrentCollection.getItemsArrayList();
         if (mItems == null) {
             mItems = new ArrayList<>();
         }
+
+        /*********FOR TESTING***************/
+        Item i1 = new Item();
+        Item i2 = new Item();
+        mItems.add(i1);
+        mItems.add(i2);
+        /**********************************/
         ItemAdapter adapter = new ItemAdapter(mItems);
         setListAdapter(adapter);
     }
@@ -80,12 +98,12 @@ public class ItemListFragment extends ListFragment {
 
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
-        Item localItem = ((ItemAdapter)getListAdapter()).getItem(position);
-        Log.d(TAG, localItem.getItemName() + " was clicked");
+        Item item = ((ItemAdapter)getListAdapter()).getItem(position);
+        Log.d(TAG, item.getItemName() + " was clicked");
 
         //Start ItemActivity
         Intent i = new Intent(getActivity(), ItemActivity.class);
-        i.putExtra(ItemFragment.EXTRA_ITEM_ID, localItem.getId());
+        i.putExtra(ItemFragment.EXTRA_ITEM_ID, item.getId());
         startActivity(i);
     }
 

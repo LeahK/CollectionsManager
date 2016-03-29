@@ -106,10 +106,9 @@ public class ActivityCollections extends AppCompatActivity
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 // redirect to ItemListActivity in app folder
+                Collection collection = gridViewAdapter.getItem(position);
                 Intent itemListIntent = new Intent(getApplicationContext(), ItemListActivity.class);
-                //int collectionId = mCollectionsThumbIds.get(position);
-                Collection c = new Collection();
-                itemListIntent.putExtra(ItemListFragment.EXTRA_COLLECTION_ID, c.getCollectionId());
+                itemListIntent.putExtra(ItemListFragment.EXTRA_COLLECTION_ID, collection.getCollectionId());
                 startActivity(itemListIntent);
             }
         });
