@@ -106,8 +106,6 @@ public class ItemFragment extends Fragment {
         super.onCreate(savedInstanceState);
         UUID itemId = (UUID)getArguments().getSerializable(EXTRA_ITEM_ID);
         mItem = ItemList.get(getActivity()).getItem(itemId);
-        //Bundle args = getActivity().getIntent().getExtras();
-        //mCollectionId = args.getInt(ItemListFragment.EXTRA_COLLECTION_ID);
     }
 
     @Override

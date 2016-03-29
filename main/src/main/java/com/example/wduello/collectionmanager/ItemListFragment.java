@@ -53,18 +53,18 @@ public class ItemListFragment extends ListFragment {
                 break;
             }
         }
-        //mCurrentCollection = new Collection();
-        //mItems = mCurrentCollection.getItemsArrayList();
+        //Get items in collection.  If null, create a new list
+        mItems = mCurrentCollection.getItemsArrayList();
         if (mItems == null) {
             mItems = new ArrayList<>();
         }
 
-        /*********FOR TESTING***************/
+        /* TEST
         Item i1 = new Item();
         Item i2 = new Item();
         mItems.add(i1);
-        mItems.add(i2);
-        /**********************************/
+        mItems.add(i2); */
+
         ItemAdapter adapter = new ItemAdapter(mItems);
         setListAdapter(adapter);
     }
