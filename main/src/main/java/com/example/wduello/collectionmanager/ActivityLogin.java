@@ -210,6 +210,9 @@ public class ActivityLogin extends AppCompatActivity implements LoaderCallbacks<
 
                 ref.authWithPassword(email, password, authResultHandler);
 
+                mCurrentUser = new User(email);
+                mCurrentUser.saveUser();
+
             } else {
 
                 Firebase ref = new Firebase("https://collectionsapp.firebaseio.com");
