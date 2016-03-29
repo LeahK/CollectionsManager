@@ -15,7 +15,7 @@ public class ItemList {
     private static final String FILENAME = "items.json";
 
 
-    private ArrayList<LocalItem> mLocalItems;
+    private ArrayList<Item> mItems;
     private CollectionsManagerJSONSerializer mSerializer;
 
 
@@ -24,15 +24,16 @@ public class ItemList {
 
     private ItemList(Context appContext) {
         mAppContext = appContext;
-        mLocalItems = new ArrayList<LocalItem>();
+        mItems = new ArrayList<Item>();
         mSerializer = new CollectionsManagerJSONSerializer(mAppContext, FILENAME);
 
+        /*
         try {
             mLocalItems = mSerializer.loadItems();
         } catch (Exception e) {
             mLocalItems = new ArrayList<>();
             Log.e(TAG, "Error loading items", e);
-        }
+        } */
     }
 
     public static ItemList get(Context c) {
@@ -42,13 +43,14 @@ public class ItemList {
         return sItemList;
     }
 
-    public void addItem(LocalItem i) {
-        mLocalItems.add(i);
+    public void addItem(Item i) {
+        mItems.add(i);
     }
 
-    public void deleteItem(LocalItem i ) { mLocalItems.remove(i); }
-
+    public void deleteItem(Item i ) { mItems.remove(i); }
+/*
     public boolean saveItems() {
+        /*
         try {
             mSerializer.saveItems(mLocalItems);
             Log.d(TAG, "items saved to file");
@@ -57,14 +59,14 @@ public class ItemList {
             Log.e(TAG, "Error saving crimes: ", e);
             return false;
         }
+    } */
+
+    public ArrayList<Item> getLocalItems() {
+        return mItems;
     }
 
-    public ArrayList<LocalItem> getLocalItems() {
-        return mLocalItems;
-    }
-
-    public LocalItem getItem(UUID id) {
-        for (LocalItem i : mLocalItems) {
+    public Item getItem(UUID id) {
+        for (Item i : mItems) {
             if (i.getId().equals(id))
                 return i;
         }

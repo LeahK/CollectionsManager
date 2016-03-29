@@ -31,12 +31,13 @@ public class CollectionsManagerJSONSerializer {
         mFilename = f;
     }
 
-    public void saveItems(ArrayList<LocalItem> localItems) throws JSONException, IOException {
+    /*
+    public void saveItems(ArrayList<Item> localItems) throws JSONException, IOException {
 
         //Build an array in JSON
         JSONArray array = new JSONArray();
 
-        for (LocalItem i : localItems)
+        for (Item i : localItems)
             array.put(i.toJSON());
 
         //Write the file to disk
@@ -49,10 +50,12 @@ public class CollectionsManagerJSONSerializer {
             if (writer != null)
                 writer.close();
         }
-    }
+    } */
 
-    public ArrayList<LocalItem> loadItems() throws IOException, JSONException {
-        ArrayList<LocalItem> localItems = new ArrayList<>();
+    /*
+
+    public ArrayList<Item> loadItems() throws IOException, JSONException {
+        ArrayList<Item> localItems = new ArrayList<>();
         BufferedReader reader = null;
         try {
             //Open and read file into StringBuilder
@@ -66,7 +69,7 @@ public class CollectionsManagerJSONSerializer {
             //Parse the JSON using JSONTokener
             JSONArray array = (JSONArray) new JSONTokener(jsonString.toString()).nextValue();
             for (int i = 0; i < array.length(); i++) {
-                localItems.add(new LocalItem(array.getJSONObject(i)));
+                localItems.add(new Item(array.getJSONObject(i)));
             }
         } catch (FileNotFoundException e) {
             //Ignore
@@ -76,4 +79,5 @@ public class CollectionsManagerJSONSerializer {
         }
         return localItems;
     }
+    */
 }
