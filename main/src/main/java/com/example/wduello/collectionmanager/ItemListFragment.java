@@ -1,5 +1,6 @@
 package com.example.wduello.collectionmanager;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ListFragment;
@@ -20,6 +21,7 @@ import android.widget.TextView;
 
 
 import java.util.ArrayList;
+import java.util.UUID;
 
 /**
  * Created by kayewrobleski on 3/24/16.
@@ -30,7 +32,7 @@ public class ItemListFragment extends ListFragment {
     public static final String EXTRA_COLLECTION_ID = "com.example.wduello.collectionmanager.collection_id";
 
     private ArrayList<Item> mItems;
-    protected int mCollectionId;
+    private UUID mCollectionId;
 
 
     @Override
@@ -39,8 +41,12 @@ public class ItemListFragment extends ListFragment {
         setHasOptionsMenu(true);
         //getActivity().setTitle(R.string.items_title);
         Bundle args = getActivity().getIntent().getExtras();
-        mCollectionId = args.getInt(ItemListFragment.EXTRA_COLLECTION_ID);
-        mItems = ItemList.get(getActivity()).getLocalItems();
+        mCollectionId = (UUID)args.getSerializable(EXTRA_COLLECTION_ID);
+        Collection collection = CollectionList.get(getActivity()).getCollection(mCollectionId);
+        mItems = collection.getItemsArrayList();
+        if (mItems == null) {
+            mItems = new ArrayList<>();
+        }
         ItemAdapter adapter = new ItemAdapter(mItems);
         setListAdapter(adapter);
     }
@@ -86,8 +92,8 @@ public class ItemListFragment extends ListFragment {
 
     private class ItemAdapter extends ArrayAdapter<Item> {
 
-        public ItemAdapter(ArrayList<Item> localItems) {
-            super(getActivity(), 0, localItems);
+        public ItemAdapter(ArrayList<Item> items) {
+            super(getActivity(), 0, items);
         }
 
         @Override
@@ -98,16 +104,16 @@ public class ItemListFragment extends ListFragment {
                         .inflate(R.layout.custom_list_item, null);
             }
 
-            //Configure view for this localItem
-            Item localItem = getItem(position);
+            //Configure view for this item
+            Item item = getItem(position);
 
-                TextView nameTextView = (TextView) convertView.findViewById(R.id.custom_list_item_nameTextView);
-                nameTextView.setText(localItem.getItemName());
+            TextView nameTextView = (TextView) convertView.findViewById(R.id.custom_list_item_nameTextView);
+            nameTextView.setText(item.getItemName());
 
-                CheckBox advertisedCheckBox = (CheckBox) convertView.findViewById(R.id.custom_list_item_advertisedCheckBox);
-                advertisedCheckBox.setChecked(localItem.isAdvertised());
+            CheckBox advertisedCheckBox = (CheckBox) convertView.findViewById(R.id.custom_list_item_advertisedCheckBox);
+            advertisedCheckBox.setChecked(item.isAdvertised());
 
-                return convertView;
+            return convertView;
         }
     }
 

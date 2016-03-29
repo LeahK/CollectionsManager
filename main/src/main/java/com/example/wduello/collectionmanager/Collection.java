@@ -9,6 +9,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * Created by kayewrobleski on 3/6/16.
@@ -17,9 +18,12 @@ public class Collection implements Serializable {
 
     private HashMap<String, Item> mItems;
     protected String mCollectionName;
-    //private UUID mCollectionId;
+    private UUID mCollectionId;
 
-    protected Collection(){}
+
+    protected Collection(){
+        mCollectionId = UUID.randomUUID();
+    }
 
     public Collection(String name) {
         mCollectionName = name;
@@ -50,6 +54,10 @@ public class Collection implements Serializable {
                 System.out.println("The read failed: " + firebaseError.getMessage());
             }
         });
+    }
+
+    public UUID getCollectionId() {
+        return mCollectionId;
     }
 
     public HashMap<String, Item> getItems() {

@@ -61,7 +61,7 @@ public class ItemList {
         }
     } */
 
-    public ArrayList<Item> getLocalItems() {
+    public ArrayList<Item> getItems() {
         return mItems;
     }
 

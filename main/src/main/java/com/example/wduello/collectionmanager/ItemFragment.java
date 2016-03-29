@@ -55,9 +55,6 @@ public class ItemFragment extends Fragment {
         Bundle args = new Bundle();
         args.putSerializable(EXTRA_ITEM_ID, itemId);
 
-        //mCollectionId = collectionId;
-        //args.putSerializable(EXTRA_COLLECTION_ID, collectionId);
-
         ItemFragment fragment = new ItemFragment();
         fragment.setArguments(args);
 

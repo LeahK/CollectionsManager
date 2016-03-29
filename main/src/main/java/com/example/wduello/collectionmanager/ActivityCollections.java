@@ -1,10 +1,12 @@
 package com.example.wduello.collectionmanager;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -16,7 +18,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
+import android.widget.CheckBox;
 import android.widget.GridView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -25,6 +29,7 @@ import android.widget.Toast;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.UUID;
 
 public class ActivityCollections extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -82,7 +87,18 @@ public class ActivityCollections extends AppCompatActivity
         // Collections/Items GRIDVIEW
         //*************************
         GridView gridView = (GridView) findViewById(R.id.gridView);
-        final GridViewAdapter gridViewAdapter = new GridViewAdapter(this);
+        ArrayList<Collection> collections = ActivityLogin.mCurrentUser.getCollectionsArrayList();
+
+        /*************FOR TESTING***********/
+        Collection c1 = new Collection();
+        c1.setCollectionName("Test1");
+        Collection c2 = new Collection();
+        c2.setCollectionName("Test2");
+        collections.add(c1);
+        collections.add(c2);
+        /*********************************/
+
+        final GridViewAdapter gridViewAdapter = new GridViewAdapter(this, collections);
         gridView.setAdapter(gridViewAdapter);
         gridView.setNumColumns(3);
 
@@ -91,8 +107,9 @@ public class ActivityCollections extends AppCompatActivity
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 // redirect to ItemListActivity in app folder
                 Intent itemListIntent = new Intent(getApplicationContext(), ItemListActivity.class);
-                int collectionId = mCollectionsThumbIds.get(position);
-                itemListIntent.putExtra(ItemListFragment.EXTRA_COLLECTION_ID, collectionId);
+                //int collectionId = mCollectionsThumbIds.get(position);
+                Collection c = new Collection();
+                itemListIntent.putExtra(ItemListFragment.EXTRA_COLLECTION_ID, c.getCollectionId());
                 startActivity(itemListIntent);
             }
         });
@@ -128,26 +145,28 @@ public class ActivityCollections extends AppCompatActivity
 
         private Context mContext;
         private ArrayList<Collection> mCollections;
+        private LayoutInflater mLayoutInflater = null;
 
-        public GridViewAdapter(Context c){
-            mContext = c;
-            //mCollections = collections;
+        public GridViewAdapter(Activity context, ArrayList<Collection> collections) {
+            mContext = context;
+            mCollections = collections;
+            mLayoutInflater = (LayoutInflater)mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         }
 
         // how many views are we populating?
         @Override
         public int getCount() {
-            return mCollectionsThumbIds.size();
+            return mCollections.size();
         }
 
         @Override
-        public Object getItem(int arg0){
-            return mCollectionsThumbIds.get(arg0);
+        public Collection getItem(int position){
+            return mCollections.get(position);
         }
 
         @Override
-        public long getItemId(int arg0){
-            return arg0;
+        public long getItemId(int position) {
+            return position;
         }
 
         // this will be used to remove a collection from the gridView and from storage
@@ -159,35 +178,26 @@ public class ActivityCollections extends AppCompatActivity
         // note: before this view can display anything, the list containing the thumbnail images
         // MUST be populated. Otherwise, you'll get a blank view.
         @Override
-        public View getView(int position, View view, ViewGroup parent){
-            if (view == null)
+        public View getView(int position, View convertView, ViewGroup parent){
+            if (convertView == null)
             {
-                view = getLayoutInflater().inflate(R.layout.imagebutton_collection_or_item, parent, false);
+                convertView = getLayoutInflater().inflate(R.layout.imagebutton_collection_or_item, parent, false);
             }
 
-            // create an image button
-            ImageView imageView = (ImageView) view.findViewById(R.id.imageView_thumbnail);
+            Collection collection = getItem(position);
 
-            // set the image thumbnail to the one from mCollectionsThumbIds
-            imageView.setImageResource(mCollectionsThumbIds.get(position));
+            // create an image button
+            ImageView imageView = (ImageView) convertView.findViewById(R.id.imageView_thumbnail);
+            imageView.setImageResource(R.drawable.ic_photo_24dp);
 
             // associate the position with the imageButton
             imageView.setTag(Integer.valueOf(position));
 
-            // @TODO add some logic where if the object is a collection, make the button a
-            // @TODO --- folder icon
-            imageView.setImageResource(mCollectionsThumbIds.get(position));
-
             // create a textView
-            TextView collection_or_item_name = (TextView) view.findViewById(R.id.collection_or_item_name);
+            TextView collectionName = (TextView) convertView.findViewById(R.id.collection_or_item_name);
+            collectionName.setText(collection.getCollectionName());
 
-            // set the text to the name of the collection or item
-            // @TODO --> replace with actual text
-            collection_or_item_name.setText("Collection");
-
-                    // when done setting all the text and shtuff
-                    // return the view
-            return view;
+            return convertView;
         }
     }
 
