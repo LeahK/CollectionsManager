@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.view.View;
 import android.support.design.widget.NavigationView;
@@ -29,7 +30,11 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.File;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 public class ActivityAddCollection extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -38,6 +43,9 @@ public class ActivityAddCollection extends AppCompatActivity
     //*************************
     // Variables
     //*************************
+
+
+    Collection collection = new Collection();
 
     // this ArrayList will store the field ids
     private ArrayList<Integer> mCollectionsThumbIds = new ArrayList<Integer>();
@@ -122,11 +130,13 @@ public class ActivityAddCollection extends AppCompatActivity
             @Override
             public void onClick(View v) {
                 // get the collectionName
-                CharSequence string = collectionName.getText();
+                CharSequence collectionNameText = collectionName.getText();
 
-                // @TODO -- get the current thumbnail, and save it
+                // set collection name
+                collection.setCollectionName(collectionNameText.toString());
 
-                // @TODO -- this information will need to be transferred to server
+                // then save the collection
+//                collection.saveCollection();
 
                 // after we're done, finish
                 finish();
@@ -192,8 +202,26 @@ public class ActivityAddCollection extends AppCompatActivity
             ImageView imageView = (ImageView) findViewById(R.id.collectionThumbnail);
             imageView.setImageBitmap(imageBitmap);
 
-            // @TODO -- currently this image is not saved anywhere
-            // @TODO -- it will eventually need to be saved to the server
+            // get the path
+
+            //Create an image file name
+            String timeStamp = new SimpleDateFormat("yyMMdd_HHmmss").format(new Date());
+            String imageFileName = "JPEG_" + timeStamp + "_";
+            File storageDir = Environment.getExternalStoragePublicDirectory(
+                    Environment.DIRECTORY_PICTURES);
+            File image = null;
+            try {
+                image = File.createTempFile(imageFileName, ".jpg", storageDir);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            //Save a file: path for use with ACTION_VIEW intents
+            //mCurrentPhotoPath = "file:" + image.getAbsolutePath();
+            String mCurrentPhotoPath = image.getAbsolutePath();
+
+            // save the photo path to the collection
+            collection.setPhotoPath(mCurrentPhotoPath);
         }
     }
 
