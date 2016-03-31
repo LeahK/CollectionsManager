@@ -136,10 +136,12 @@ public class ActivityAddCollection extends AppCompatActivity
                 collection.setCollectionName(collectionNameText.toString());
 
                 // then save the collection
-//                collection.saveCollection();
+                collection.saveCollection();
 
-                // after we're done, finish
-                finish();
+                // redirect to myAdvertisements page
+                Intent mainCollectionsPage = new Intent(ActivityAddCollection.this, ActivityCollections.class);
+                startActivity(mainCollectionsPage);
+
             }
         });
 

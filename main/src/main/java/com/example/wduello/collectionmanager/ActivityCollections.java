@@ -89,7 +89,7 @@ public class ActivityCollections extends AppCompatActivity
         GridView gridView = (GridView) findViewById(R.id.gridView);
         ArrayList<Collection> collections = ActivityLogin.mCurrentUser.getCollectionsArrayList();
 
-        final GridViewAdapter gridViewAdapter = new GridViewAdapter(this, collections);
+            final GridViewAdapter gridViewAdapter = new GridViewAdapter(this, collections);
         gridView.setAdapter(gridViewAdapter);
         gridView.setNumColumns(3);
 
