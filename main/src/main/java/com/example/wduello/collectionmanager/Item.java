@@ -24,21 +24,17 @@ public class Item extends Collection implements Serializable {
     protected String mItemName;
     private boolean mAdvertised;
 
-    protected  Item(){
-        mId = UUID.randomUUID();
+    // empty constructor for deserialization
+    protected  Item() {
     }
 
     public Item(String name, String photoPath) {
         mAttributes = new HashMap<String, Attribute>();
         mItemName = name;
         mPhotoPath = photoPath;
-        listenForAttributeChanges();
     }
 
-    public UUID getId() {
-        return mId;
-    }
-    private void listenForAttributeChanges(){
+    public void listenForAttributeChanges(){
 
         String attributeRefUrl = "https://collectionsapp.firebaseio.com/users/"
                 + ActivityLogin.mCurrentUser.getUserName() + "/collections/" + mCollectionName + "/" + mItemName + "/attributes/";
@@ -97,6 +93,10 @@ public class Item extends Collection implements Serializable {
 
     public void setAdvertised(boolean advertised) {
         mAdvertised = advertised;
+    }
+
+    public UUID getId() {
+        return mId;
     }
 
     public void saveItem() {

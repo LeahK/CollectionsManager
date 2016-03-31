@@ -194,10 +194,19 @@ public class ActivityLogin extends AppCompatActivity implements LoaderCallbacks<
                 Firebase.AuthResultHandler authResultHandler = new Firebase.AuthResultHandler() {
                     @Override
                     public void onAuthenticated(AuthData authData) {
-                        showProgress(false);
+
+                        System.out.println("User authenticated: " + authData.getUid());
+                        mCurrentUser.listenForUserChanges();
+
+                        // try to set mCurrentUser to user by forcing listener to update
+                        User default_user = new User("default@email.com");
+                        default_user.saveUser();
+
                         Intent intent = new Intent(ActivityLogin.this, ActivityCollections.class);
                         startActivity(intent);
-                        System.out.println("User authenticated: " + authData.getUid());
+
+                        mCurrentUser.listenForCollectionChanges();
+                        showProgress(false);
                     }
                     @Override
                     public void onAuthenticationError(FirebaseError firebaseError) {
@@ -208,10 +217,9 @@ public class ActivityLogin extends AppCompatActivity implements LoaderCallbacks<
                     }
                 };
 
+                mCurrentUser = new User(email);
                 ref.authWithPassword(email, password, authResultHandler);
 
-                mCurrentUser = new User(email);
-                mCurrentUser.saveUser();
 
             } else {
 
@@ -242,6 +250,16 @@ public class ActivityLogin extends AppCompatActivity implements LoaderCallbacks<
 
                 mCurrentUser = new User(email);
                 mCurrentUser.saveUser();
+
+                Collection test_col = new Collection("test collection");
+                Item item_one = new Item("item_one", "none");
+                Item item_two = new Item("item_two", "none");
+                HashMap<String, Item> items = new HashMap<>();
+                items.put("item_one", item_one);
+                items.put("item_two", item_two);
+
+                test_col.setItems(items);
+                test_col.saveCollection();
 
             }
         }

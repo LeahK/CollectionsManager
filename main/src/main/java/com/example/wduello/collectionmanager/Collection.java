@@ -1,5 +1,6 @@
 package com.example.wduello.collectionmanager;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
@@ -20,18 +21,17 @@ public class Collection implements Serializable {
     protected String mCollectionName;
     private UUID mCollectionId;
 
-
+    // empty constructor for deserialization
     protected Collection(){
-        mCollectionId = UUID.randomUUID();
+
     }
 
     public Collection(String name) {
         mCollectionName = name;
         mItems = new HashMap<String, Item>();
-        listenForItemChanges();
     }
 
-    private void listenForItemChanges(){
+    public void listenForItemChanges(){
 
         String userCollectionRef = "https://collectionsapp.firebaseio.com/users/"
                 + ActivityLogin.mCurrentUser.getUserName() + "/collections/";
@@ -64,6 +64,7 @@ public class Collection implements Serializable {
         return mItems;
     }
 
+    @JsonIgnore
     public ArrayList<Item> getItemsArrayList() {
         ArrayList<Item> items = new ArrayList<Item>(mItems.values());
         return items;
@@ -81,9 +82,18 @@ public class Collection implements Serializable {
         this.mCollectionName = mCollectionName;
     }
 
-
+    /*
+    *   Adds this Collection to the current User's list of collections and saves it in
+    *   the database.
+     */
     public void saveCollection() {
 
+        // add to local collections
+        HashMap<String, Collection> collections = ActivityLogin.mCurrentUser.getCollections();
+        collections.put(this.mCollectionName, this);
+        ActivityLogin.mCurrentUser.setCollections(collections);
+
+        // save the collection in the database
         String userCollectionRef = "https://collectionsapp.firebaseio.com/users/"
                 + ActivityLogin.mCurrentUser.getUserName() + "/collections/";
         Firebase collectionRef = new Firebase(userCollectionRef).child(mCollectionName);

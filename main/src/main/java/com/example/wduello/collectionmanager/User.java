@@ -1,6 +1,8 @@
 package com.example.wduello.collectionmanager;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
@@ -14,24 +16,48 @@ import java.util.HashMap;
  * Created by Justin Gregorio
  * User model for creating, saving and manipulating user data
  */
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class User implements Serializable {
 
     private HashMap <String, Collection> mCollections;
     private String mEmail;
-    private boolean mInstantiated = false;
     private String mUserName;
+
+    // constructor so deserialization will work
+    private User(){}
 
     // constructor
     public User(String email) {
 
-        if (!mInstantiated) {
-            mEmail = email;
-            String[] emailParts = email.split("@");
-            mUserName = emailParts[0];
-            mCollections = new HashMap<String, Collection>();
-            mInstantiated = true;
-        }
+        mEmail = email;
+        String[] emailParts = email.split("@");
+        mUserName = emailParts[0];
+        mCollections = new HashMap<String, Collection>();
 
+    }
+
+    public void listenForUserChanges(){
+        String userRefUrl = "https://collectionsapp.firebaseio.com/users/";
+        Firebase userRef = new Firebase(userRefUrl);
+        userRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                System.out.println("There are " + snapshot.getChildrenCount() + " users");
+                HashMap<String, User> users = new HashMap<String, User>();
+                for (DataSnapshot userSnapshot : snapshot.getChildren()) {
+                    User user = userSnapshot.getValue(User.class);
+                    users.put(user.getUserName(), user);
+                }
+                if (users.containsKey(ActivityLogin.mCurrentUser.getUserName())) {
+                    ActivityLogin.mCurrentUser = users.get(ActivityLogin.mCurrentUser.getUserName());
+                }
+            }
+
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+                System.out.println("The read failed: " + firebaseError.getMessage());
+            }
+        });
     }
 
     public void listenForCollectionChanges(){
@@ -65,6 +91,7 @@ public class User implements Serializable {
         return mCollections;
     }
 
+    @JsonIgnore
     public ArrayList<Collection> getCollectionsArrayList(){
         ArrayList<Collection> collections = new ArrayList<>(mCollections.values());
         return collections;
