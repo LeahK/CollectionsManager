@@ -1,5 +1,6 @@
 package com.example.wduello.collectionmanager;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
@@ -28,10 +29,11 @@ public class Item extends Collection implements Serializable {
     protected  Item() {
     }
 
-    public Item(String name, String photoPath) {
+    public Item(String name, String photoPath, Collection collection) {
         mAttributes = new HashMap<String, Attribute>();
         mItemName = name;
         mPhotoPath = photoPath;
+        mId = UUID.randomUUID();
     }
 
     public void listenForAttributeChanges(){
@@ -99,12 +101,21 @@ public class Item extends Collection implements Serializable {
         return mId;
     }
 
+    /*
+    *   Saves this Item to local storage and the database.
+     */
     public void saveItem() {
+        // save to local
+        Collection myCollection = ActivityLogin.mCurrentUser.getCollection(mCollectionName);
+        HashMap<String, Item> items = myCollection.getItems();
+        items.put(mItemName, this);
+        myCollection.setItems(items);
 
+        // save to database
         String userCollectionRef = "https://collectionsapp.firebaseio.com/users/"
                 + ActivityLogin.mCurrentUser.getUserName() + "/collections/";
         Firebase collectionRef = new Firebase(userCollectionRef);
-        Firebase itemRef = collectionRef.child(super.mCollectionName).child(mItemName);
+        Firebase itemRef = collectionRef.child(mCollectionName).child(mItemName);
         itemRef.setValue(this, new Firebase.CompletionListener() {
             @Override
             public void onComplete(FirebaseError firebaseError, Firebase firebase) {

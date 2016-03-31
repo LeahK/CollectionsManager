@@ -210,10 +210,10 @@ public class ActivityLogin extends AppCompatActivity implements LoaderCallbacks<
                     }
                     @Override
                     public void onAuthenticationError(FirebaseError firebaseError) {
-                        showProgress(false);
                         mPasswordView.setError(getString(R.string.error_incorrect_password));
                         mPasswordView.requestFocus();
                         System.out.println("User not authenticated: " + firebaseError.getMessage());
+                        showProgress(false);
                     }
                 };
 
@@ -230,19 +230,20 @@ public class ActivityLogin extends AppCompatActivity implements LoaderCallbacks<
 
                         @Override
                         public void onSuccess() {
+                            // force a collections read
                             mCurrentUser.listenForCollectionChanges();
-                            showProgress(false);
                             Intent intent = new Intent(ActivityLogin.this, ActivityCollections.class);
                             startActivity(intent);
                             System.out.println("User was successfully created");
+                            showProgress(false);
                         }
 
                         @Override
                         public void onError(FirebaseError error) {
-                            showProgress(false);
                             mEmailView.setError("Entered Email already registered.");
                             mEmailView.requestFocus();
                             System.out.println("There was a problem creating the user:" + error.getMessage());
+                            showProgress(false);
                         }
                     });
                 } catch (FirebaseException e) {
@@ -250,16 +251,6 @@ public class ActivityLogin extends AppCompatActivity implements LoaderCallbacks<
 
                 mCurrentUser = new User(email);
                 mCurrentUser.saveUser();
-
-                Collection test_col = new Collection("test collection");
-                Item item_one = new Item("item_one", "none");
-                Item item_two = new Item("item_two", "none");
-                HashMap<String, Item> items = new HashMap<>();
-                items.put("item_one", item_one);
-                items.put("item_two", item_two);
-
-                test_col.setItems(items);
-                test_col.saveCollection();
 
             }
         }

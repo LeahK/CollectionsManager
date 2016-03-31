@@ -106,6 +106,10 @@ public class User implements Serializable {
         return mUserName;
     }
 
+    public Collection getCollection(String collectionName){
+        return mCollections.get(collectionName);
+    }
+
 
     public void saveUser() {
 

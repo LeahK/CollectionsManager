@@ -29,6 +29,7 @@ public class Collection implements Serializable {
     public Collection(String name) {
         mCollectionName = name;
         mItems = new HashMap<String, Item>();
+        mCollectionId = UUID.randomUUID();
     }
 
     public void listenForItemChanges(){
