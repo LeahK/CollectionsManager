@@ -65,7 +65,10 @@ public class Item extends Collection implements Serializable {
     }
 
     public ArrayList<Attribute> getAttributesArrayList() {
-        ArrayList<Attribute> attributes = new ArrayList<>(mAttributes.values());
+        ArrayList<Attribute> attributes = new ArrayList<>();
+        if (mAttributes != null){
+            attributes = new ArrayList<>(mAttributes.values());
+        }
         return attributes;
     }
 

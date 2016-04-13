@@ -71,7 +71,10 @@ public class Collection implements Serializable {
 
     @JsonIgnore
     public ArrayList<Item> getItemsArrayList() {
-        ArrayList<Item> items = new ArrayList<Item>(mItems.values());
+        ArrayList<Item> items = new ArrayList<>();
+        if (mItems != null) {
+            items = new ArrayList<>(mItems.values());
+        }
         return items;
     }
 
