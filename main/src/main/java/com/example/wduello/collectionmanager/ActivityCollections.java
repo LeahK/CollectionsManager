@@ -98,8 +98,8 @@ public class ActivityCollections extends AppCompatActivity
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 // redirect to ItemListActivity in app folder
                 Collection collection = gridViewAdapter.getItem(position);
-                Intent itemListIntent = new Intent(getApplicationContext(), ItemListActivity.class);
-                itemListIntent.putExtra(ItemListFragment.EXTRA_COLLECTION_ID, collection.getCollectionId());
+                Intent itemListIntent = new Intent(ActivityCollections.this, ItemListActivity.class);
+                itemListIntent.putExtra("collectionId", collection.getCollectionId());
                 startActivity(itemListIntent);
             }
         });

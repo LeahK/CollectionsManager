@@ -44,9 +44,6 @@ public class ActivityAddCollection extends AppCompatActivity
     // Variables
     //*************************
 
-
-    Collection collection = new Collection();
-
     // this ArrayList will store the field ids
     private ArrayList<Integer> mCollectionsThumbIds = new ArrayList<Integer>();
 
@@ -132,11 +129,10 @@ public class ActivityAddCollection extends AppCompatActivity
                 // get the collectionName
                 CharSequence collectionNameText = collectionName.getText();
 
-                // set collection name
-                collection.setCollectionName(collectionNameText.toString());
+                Collection createdCollection = new Collection(collectionNameText.toString());
 
                 // then save the collection
-                collection.saveCollection();
+                createdCollection.saveCollection();
 
                 // redirect to myAdvertisements page
                 Intent mainCollectionsPage = new Intent(ActivityAddCollection.this, ActivityCollections.class);
@@ -223,7 +219,7 @@ public class ActivityAddCollection extends AppCompatActivity
             String mCurrentPhotoPath = image.getAbsolutePath();
 
             // save the photo path to the collection
-            collection.setPhotoPath(mCurrentPhotoPath);
+            // collection.setPhotoPath(mCurrentPhotoPath);
         }
     }
 

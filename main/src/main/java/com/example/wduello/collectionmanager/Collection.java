@@ -63,6 +63,8 @@ public class Collection implements Serializable {
         return mCollectionId;
     }
 
+    public void setCollectionId(UUID collectionId) { mCollectionId = collectionId; }
+
     public HashMap<String, Item> getItems() {
         return mItems;
     }

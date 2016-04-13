@@ -33,22 +33,27 @@ public class ItemListFragment extends ListFragment {
 
     private ArrayList<Item> mItems;
     private Collection mCurrentCollection;
+    private UUID collectionId;
 
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
-        //getActivity().setTitle(R.string.items_title);
-        Bundle args = getActivity().getIntent().getExtras();
-        UUID collectionId = (UUID)args.getSerializable(EXTRA_COLLECTION_ID);
-        //Collection collection = CollectionList.get(getActivity()).getCollection(mCollectionId);
+
+        // get collection id
+        Intent startingIntent = getActivity().getIntent();
+        Bundle extras = startingIntent.getExtras();
+
+        if (extras != null){
+            collectionId = (UUID) extras.get("collectionId");
+        }
 
 
         //Get collection based on collection ID
         ArrayList<Collection> collections = ActivityLogin.mCurrentUser.getCollectionsArrayList();
         for (Collection c: collections) {
-            if (c.getCollectionId() == collectionId) {
+            if (c.getCollectionId().equals(collectionId)) {
                 mCurrentCollection = c;
                 break;
             }
