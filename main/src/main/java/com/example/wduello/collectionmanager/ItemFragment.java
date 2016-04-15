@@ -17,6 +17,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
@@ -42,6 +43,7 @@ public class ItemFragment extends Fragment {
     private ImageView mPhotoView;
     private String mCurrentPhotoPath;
     private FloatingActionButton mDeleteButton;
+    private Button mSaveItemButton;
     private int mCollectionId;
 
     private OnFragmentInteractionListener mListener;
@@ -147,11 +149,7 @@ public class ItemFragment extends Fragment {
 
 
         mPhotoView = (ImageView) v.findViewById(R.id.item_image);
-        //mCurrentPhotoPath = mLocalItem.getPhotoPath();
-        if (mItem.getPhotoPath() != null) {
-            mCurrentPhotoPath = mItem.getPhotoPath();
-            setPhoto();
-        }
+
         ImageButton cameraButton = (ImageButton) v.findViewById(R.id.camera_button);
         cameraButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -165,6 +163,18 @@ public class ItemFragment extends Fragment {
             public void onClick(View v) {
                 //ItemList.get(getActivity()).deleteItem(mItem);
                 getActivity().finish();
+            }
+        });
+
+        mSaveItemButton = (Button) v.findViewById(R.id.save_item_button);
+        mSaveItemButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if (mItem.getPhotoPath() != null) {
+                    mCurrentPhotoPath = mItem.getPhotoPath();
+                    setPhoto();
+                }
             }
         });
 
