@@ -110,6 +110,12 @@ public class User implements Serializable {
         return mCollections.get(collectionName);
     }
 
+    public void removeCollection(String collectionName){
+        if (mCollections.containsKey(collectionName)){
+            mCollections.remove(collectionName);
+        }
+    }
+
 
     public void saveUser() {
 

@@ -108,10 +108,9 @@ public class ActivityCollections extends AppCompatActivity
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
 
-                // remove the selected collection
-                mCollectionsThumbIds.remove(position);
+                // remove item
+                gridViewAdapter.removeItem(position);
 
-                // refresh the view
                 gridViewAdapter.notifyDataSetChanged();
                 return true;
             }
@@ -162,6 +161,14 @@ public class ActivityCollections extends AppCompatActivity
         // this will be used to remove a collection from the gridView and from storage
         public void removeItem(int position){
             mCollectionsThumbIds.remove(position);
+
+            Collection collectionToRemove = mCollections.get(position);
+            mCollections.remove(position);
+            ActivityLogin.mCurrentUser.removeCollection(collectionToRemove.getCollectionName());
+            Toast.makeText(ActivityCollections.this, "Collection " + collectionToRemove.getCollectionName() +
+                    " deleted", Toast.LENGTH_SHORT).show();
+            ActivityLogin.mCurrentUser.saveUser();
+
             notifyDataSetChanged();
         }
 

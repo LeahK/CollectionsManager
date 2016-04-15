@@ -104,6 +104,8 @@ public class Item extends Collection implements Serializable {
         return mId;
     }
 
+    public void setId(UUID id) { mId = id;}
+
     /*
     *   Saves this Item to local storage and the database.
      */
