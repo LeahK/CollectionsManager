@@ -80,20 +80,16 @@ public class ItemListFragment extends ListFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_item_list, parent, false);
 
-        FloatingActionButton fab = (FloatingActionButton) v.findViewById(R.id.fab);
-        fab.setVisibility(View.VISIBLE);
-        fab.setOnClickListener(new View.OnClickListener() {
+        FloatingActionButton createItemButton = (FloatingActionButton) v.findViewById(R.id.fab);
+        createItemButton.setVisibility(View.VISIBLE);
+        createItemButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //Create new localItem
-                Item item = new Item();
-                //localItem.setCollectionId(mCollectionId);
-                ItemList.get(getActivity()).addItem(item);
 
                 //Start ItemActivity
                 Intent i = new Intent(getActivity(), ItemActivity.class);
-                i.putExtra(ItemFragment.EXTRA_ITEM_ID, item.getId());
                 startActivity(i);
+
             }
         });
 

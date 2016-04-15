@@ -104,8 +104,9 @@ public class ItemFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        UUID itemId = (UUID)getArguments().getSerializable(EXTRA_ITEM_ID);
-        mItem = ItemList.get(getActivity()).getItem(itemId);
+        //UUID itemId = (UUID) getArguments().getSerializable(EXTRA_ITEM_ID);
+        //mItem = ItemList.get(getActivity()).getItem(itemId);
+
     }
 
     @Override
@@ -114,7 +115,7 @@ public class ItemFragment extends Fragment {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_item, container, false);
 
-        mNameField = (EditText)v.findViewById(R.id.item_name);
+        mNameField = (EditText) v.findViewById(R.id.item_name);
         mNameField.setText(mItem.getItemName());
         mNameField.addTextChangedListener(new TextWatcher() {
             @Override
