@@ -20,20 +20,6 @@
             android:label="@string/title_activity_item"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
-        <activity
-            android:name=".dummy.ItemDetailActivity"
-            android:label="@string/title_item_detail"
-            android:parentActivityName=".dummy.ItemsActivity"
-            android:theme="@style/AppTheme.NoActionBar">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".dummy.ItemsActivity"/>
-        </activity>
-        <activity
-            android:name=".dummy.ItemsActivity"
-            android:label="@string/title_activity_item"
-            android:theme="@style/AppTheme.NoActionBar">
-        </activity>
     </application>
 
 </manifest>
