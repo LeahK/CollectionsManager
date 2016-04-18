@@ -118,7 +118,6 @@ public class ItemFragment extends Fragment {
         View v = inflater.inflate(R.layout.fragment_item, container, false);
 
         mNameField = (EditText) v.findViewById(R.id.item_name);
-        mNameField.setText(mItem.getItemName());
         mNameField.addTextChangedListener(new TextWatcher() {
             @Override
             public void onTextChanged(
@@ -139,7 +138,6 @@ public class ItemFragment extends Fragment {
         });
 
         mAdvertisedCheckBox = (CheckBox)v.findViewById(R.id.item_advertised);
-        mAdvertisedCheckBox.setChecked(mItem.isAdvertised());
         mAdvertisedCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -171,10 +169,20 @@ public class ItemFragment extends Fragment {
             @Override
             public void onClick(View v) {
 
-                if (mItem.getPhotoPath() != null) {
-                    mCurrentPhotoPath = mItem.getPhotoPath();
-                    setPhoto();
+                boolean isAdvertised = mAdvertisedCheckBox.isChecked();
+                String itemName = mNameField.getText().toString();
+
+                if (mItem == null){
+                    mItem = new Item();
                 }
+                mItem.setId(UUID.randomUUID());
+                mItem.setItemName(itemName);
+                mItem.setPhotoPath(mCurrentPhotoPath);
+                mItem.setAdvertised(isAdvertised);
+
+                mItem.saveItem();
+
+
             }
         });
 

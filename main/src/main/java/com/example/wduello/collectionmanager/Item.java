@@ -112,15 +112,21 @@ public class Item extends Collection implements Serializable {
     public void saveItem() {
         // save to local
         Collection myCollection = ActivityLogin.mCurrentUser.getCollection(mCollectionName);
+
+        if (myCollection == null){
+            myCollection = new Collection("ItemsWithoutCollection");
+        }
+
         HashMap<String, Item> items = myCollection.getItems();
         items.put(mItemName, this);
         myCollection.setItems(items);
 
         // save to database
-        String userCollectionRef = "https://collectionsapp.firebaseio.com/users/"
-                + ActivityLogin.mCurrentUser.getUserName() + "/collections/";
-        Firebase collectionRef = new Firebase(userCollectionRef);
-        Firebase itemRef = collectionRef.child(mCollectionName).child(mItemName);
+        String itemRefUrl = "https://collectionsapp.firebaseio.com/users/"
+                + ActivityLogin.mCurrentUser.getUserName() + "/collections/"
+                + myCollection.getCollectionName() + "/" + mItemName + "/";
+        Firebase itemRef = new Firebase(itemRefUrl);
+
         itemRef.setValue(this, new Firebase.CompletionListener() {
             @Override
             public void onComplete(FirebaseError firebaseError, Firebase firebase) {

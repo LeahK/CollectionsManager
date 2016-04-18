@@ -98,6 +98,18 @@ public class Collection implements Serializable {
         this.mCollectionName = mCollectionName;
     }
 
+    public static Collection findCollectionById(UUID collectionId){
+        Collection collectionWithId = null;
+
+        for (Collection c : ActivityLogin.mCurrentUser.getCollectionsArrayList()){
+            if (c.getCollectionId().equals(collectionId)){
+                collectionWithId = c;
+            }
+        }
+
+        return collectionWithId;
+    }
+
     /*
     *   Adds this Collection to the current User's list of collections and saves it in
     *   the database.
