@@ -25,4 +25,6 @@
     <string name="item_advertised_label">Advertised?</string>
     <string name="delete_item">Delete</string>
     <string name="title_activity_item">Items</string>
+    <string name="collection_name_hint">Enter a collection name.</string>
+    <string name="collection_name_label">Name</string>
 </resources>

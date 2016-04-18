@@ -3,6 +3,10 @@ package com.example.wduello.collectionmanager;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.ScaleDrawable;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.util.Log;
@@ -27,6 +31,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.File;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.UUID;
@@ -37,10 +42,6 @@ public class ActivityCollections extends AppCompatActivity
     //*************************
     // VARIABLES
     //*************************
-
-    // this ArrayList will store the IDs for the image thumbnails
-    // these thumbnails will populate the gridView on the collections page
-    private ArrayList<Integer> mCollectionsThumbIds = new ArrayList<Integer>();
 
 
     @Override
@@ -69,19 +70,6 @@ public class ActivityCollections extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-
-        //*************************
-        // Populate the thumbnail list
-        //*************************
-
-        // @TODO -- eventually this will be replaced with calls to external server
-
-        populateThumbnails(R.drawable.ic_photo_24dp);
-        populateThumbnails(R.drawable.ic_photo_24dp);
-        populateThumbnails(R.drawable.ic_photo_24dp);
-        populateThumbnails(R.drawable.ic_photo_24dp);
-        populateThumbnails(R.drawable.ic_photo_24dp);
-        populateThumbnails(R.drawable.ic_photo_24dp);
 
         //*************************
         // Collections/Items GRIDVIEW
@@ -116,17 +104,28 @@ public class ActivityCollections extends AppCompatActivity
             }
         });
     }
-
     //*************************
     // METHODS
     //*************************
 
-    // populate the ArrayList of thumbnails
-    // @TODO --> this may have a parameter with a collection object or an item object?
-    public void populateThumbnails(Integer imageResourceId){
-
-        // add a new thumbnail to the list
-        mCollectionsThumbIds.add(imageResourceId);
+    public void setThumbnail(ImageView iv, Collection c) {
+        String photoPath = c.getPhotoPath();
+        if (photoPath != null) {
+            File photoFile = new File(c.getPhotoPath());
+            if (photoFile.exists()) {
+                Bitmap bitmap = BitmapFactory.decodeFile(photoFile.getAbsolutePath());
+                bitmap = Bitmap.createScaledBitmap(bitmap, 128, 128, false);
+                iv.setImageBitmap(bitmap);
+            } else {
+                Bitmap bitmap = BitmapFactory.decodeResource(ActivityCollections.this.getResources(), R.drawable.ic_photo_24dp);
+                bitmap = Bitmap.createScaledBitmap(bitmap, 128, 128, false);
+                iv.setImageBitmap(bitmap);
+            }
+        } else {
+            Bitmap bitmap = BitmapFactory.decodeResource(ActivityCollections.this.getResources(), R.drawable.ic_photo_24dp);
+            bitmap = Bitmap.createScaledBitmap(bitmap, 128, 128, false);
+            iv.setImageBitmap(bitmap);
+        }
     }
 
     public class GridViewAdapter extends BaseAdapter{
@@ -160,7 +159,6 @@ public class ActivityCollections extends AppCompatActivity
 
         // this will be used to remove a collection from the gridView and from storage
         public void removeItem(int position){
-            mCollectionsThumbIds.remove(position);
 
             Collection collectionToRemove = mCollections.get(position);
             mCollections.remove(position);
@@ -185,7 +183,8 @@ public class ActivityCollections extends AppCompatActivity
 
             // create an image button
             ImageView imageView = (ImageView) convertView.findViewById(R.id.imageView_thumbnail);
-            imageView.setImageResource(R.drawable.ic_photo_24dp);
+            setThumbnail(imageView, collection);
+            //imageView.setImageResource(R.drawable.ic_photo_24dp);
 
             // associate the position with the imageButton
             imageView.setTag(Integer.valueOf(position));

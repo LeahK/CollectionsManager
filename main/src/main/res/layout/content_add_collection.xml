@@ -18,16 +18,12 @@
         android:id="@+id/collectionName"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:text="collection name" />
+        android:hint="@string/collection_name_hint" />
 
     <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="@dimen/item_image_width"
+        android:layout_height="@dimen/item_image_height"
         android:id="@+id/collectionThumbnail"
-        android:minHeight="150dp"
-        android:minWidth="150dp"
-        android:maxHeight="150dp"
-        android:maxWidth="150dp"
         android:background="#dcdada"
         android:layout_below="@+id/collectionName"
         android:layout_centerHorizontal="true" />
