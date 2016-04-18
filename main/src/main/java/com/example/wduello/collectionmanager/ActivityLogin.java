@@ -58,6 +58,7 @@ public class ActivityLogin extends AppCompatActivity implements LoaderCallbacks<
     private View mLoginFormView;
     public static User mCurrentUser;
     private static boolean subscribe = false;
+    private static Collection mCurrentCollection;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

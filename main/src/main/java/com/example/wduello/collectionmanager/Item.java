@@ -148,6 +148,8 @@ public class Item implements Serializable {
             Toast.makeText(context, "Item couldn't be saved, item by this name already exists.", Toast.LENGTH_LONG).show();
         }
 
+        myCollection.setItems(items);
+
         myCollection.saveCollection();
 
     }
@@ -160,6 +162,10 @@ public class Item implements Serializable {
         Collection myCollection = ActivityLogin.mCurrentUser.getCollection(miCollectionName);
 
         HashMap<String, Item> items = myCollection.getItems();
+        if (items == null){
+            items = new HashMap<String, Item>();
+        }
+
         if (!items.containsKey(this.getItemName())) {
             items.put(mItemName, this);
         } else {

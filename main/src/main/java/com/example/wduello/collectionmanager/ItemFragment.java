@@ -36,7 +36,7 @@ public class ItemFragment extends Fragment {
     private static final String TAG = "ItemFragment";
     public static final String EXTRA_ITEM_ID = "com.example.wduello.collectionsmanager.item_id";
     public static final int REQUEST_IMAGE_CAPTURE = 1;
-    private static final String ITEM_COLLECTION_NAME = "com.example.wduello.collectionsmanager.col_name";
+    private static final String CURRENT_COLLECTION = "current collection";
 
     //Private members
     private Item mItem;
@@ -46,18 +46,18 @@ public class ItemFragment extends Fragment {
     private String mCurrentPhotoPath;
     private FloatingActionButton mDeleteButton;
     private Button mSaveItemButton;
-    private String mCollectionName;
+    private Collection mCurrentCollection;
 
     private OnFragmentInteractionListener mListener;
-
 
     public ItemFragment() {
         // Required empty public constructor
     }
 
-    public static ItemFragment newInstance(UUID itemId) {
+    public static ItemFragment newInstance(UUID itemId, Collection currentCollection) {
         Bundle args = new Bundle();
         args.putSerializable(EXTRA_ITEM_ID, itemId);
+        args.putSerializable(CURRENT_COLLECTION, currentCollection);
         ItemFragment fragment = new ItemFragment();
         fragment.setArguments(args);
 
@@ -107,7 +107,13 @@ public class ItemFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         UUID itemId = (UUID) getArguments().getSerializable(EXTRA_ITEM_ID);
+        mCurrentCollection = (Collection) getArguments().getSerializable(CURRENT_COLLECTION);
         mItem = Item.findItemById(itemId);
+
+        // if the item already exitsted, the current collection hasn't been passed in
+        if (mItem != null) {
+            mCurrentCollection = ActivityLogin.mCurrentUser.getCollectionByName(mItem.getItemCollectionName());
+        }
 
     }
 
@@ -157,12 +163,15 @@ public class ItemFragment extends Fragment {
                     HashMap<String, Item> items = collection.getItems();
                     items.remove(mItem.getItemName());
                     collection.setItems(items);
+
                     collection.saveCollection();
 
                     Intent itemListIntent = new Intent(getActivity(), ItemListActivity.class);
                     UUID collectionId = collection.getCollectionId();
                     itemListIntent.putExtra("collectionId", collectionId);
                     startActivity(itemListIntent);
+
+
                 }
             });
         } else {
@@ -185,8 +194,8 @@ public class ItemFragment extends Fragment {
 
                 if (mItem == null){
                     mItem = new Item();
-                    mItem.setItemCollectionName("ItemsWithoutCollection");
                 }
+                mItem.setItemCollectionName(mCurrentCollection.getCollectionName());
                 mItem.setId(UUID.randomUUID());
                 mItem.setItemName(itemName);
                 mItem.setPhotoPath(mCurrentPhotoPath);
@@ -199,7 +208,14 @@ public class ItemFragment extends Fragment {
                     mItem.saveItem(getContext());
                 }
 
-                getActivity().finish();
+
+                Collection collection = ActivityLogin.mCurrentUser.getCollectionByName(mItem.getItemCollectionName());
+                Intent itemListIntent = new Intent(getActivity(), ItemListActivity.class);
+                UUID collectionId = collection.getCollectionId();
+                itemListIntent.putExtra("collectionId", collectionId);
+                startActivity(itemListIntent);
+
+
             }
         });
 

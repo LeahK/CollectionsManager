@@ -1,5 +1,7 @@
 package com.example.wduello.collectionmanager;
 
+import android.content.Intent;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.firebase.client.DataSnapshot;

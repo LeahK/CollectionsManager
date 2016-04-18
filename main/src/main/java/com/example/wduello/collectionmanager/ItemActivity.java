@@ -11,12 +11,15 @@ public class ItemActivity extends SingleFragmentActivity implements ItemFragment
 
 
     private static final String TAG = "ItemActivity";
+    private static final String CURRENT_COLLECTION = "current collection";
+
 
     @Override
     protected Fragment createFragment() {
                 UUID itemId = (UUID) getIntent()
                         .getSerializableExtra(ItemFragment.EXTRA_ITEM_ID);
-        return ItemFragment.newInstance(itemId);
+        Collection currentCollection = (Collection) getIntent().getSerializableExtra(CURRENT_COLLECTION);
+        return ItemFragment.newInstance(itemId, currentCollection);
     }
 
 

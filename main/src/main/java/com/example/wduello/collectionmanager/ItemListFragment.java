@@ -30,6 +30,8 @@ public class ItemListFragment extends ListFragment {
 
     private static final String TAG = "ItemListFragment";
     public static final String EXTRA_COLLECTION_ID = "com.example.wduello.collectionmanager.collection_id";
+    private static final String CURRENT_COLLECTION = "current collection";
+
 
     private ArrayList<Item> mItems;
     private Collection mCurrentCollection;
@@ -81,6 +83,7 @@ public class ItemListFragment extends ListFragment {
 
                 //Start ItemActivity
                 Intent i = new Intent(getActivity(), ItemActivity.class);
+                i.putExtra(CURRENT_COLLECTION, mCurrentCollection);
                 startActivity(i);
 
             }
