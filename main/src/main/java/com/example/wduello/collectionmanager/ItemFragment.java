@@ -36,7 +36,7 @@ public class ItemFragment extends Fragment {
     private static final String TAG = "ItemFragment";
     public static final String EXTRA_ITEM_ID = "com.example.wduello.collectionsmanager.item_id";
     public static final int REQUEST_IMAGE_CAPTURE = 1;
-    private static final String ITEM_COLLECTION_NAME = "col name";
+    private static final String ITEM_COLLECTION_NAME = "com.example.wduello.collectionsmanager.col_name";
 
     //Private members
     private Item mItem;
@@ -46,6 +46,7 @@ public class ItemFragment extends Fragment {
     private String mCurrentPhotoPath;
     private FloatingActionButton mDeleteButton;
     private Button mSaveItemButton;
+    private String mCollectionName;
 
     private OnFragmentInteractionListener mListener;
 
@@ -57,7 +58,6 @@ public class ItemFragment extends Fragment {
     public static ItemFragment newInstance(UUID itemId) {
         Bundle args = new Bundle();
         args.putSerializable(EXTRA_ITEM_ID, itemId);
-
         ItemFragment fragment = new ItemFragment();
         fragment.setArguments(args);
 
@@ -100,7 +100,6 @@ public class ItemFragment extends Fragment {
             Bitmap bitmap = BitmapFactory.decodeFile(photoFile.getAbsolutePath());
             //mPhotoView = (ImageView)v.findViewById(R.id.item_image);
             mPhotoView.setImageBitmap(bitmap);
-            mItem.setPhotoPath(mCurrentPhotoPath);
         }
     }
 
@@ -200,10 +199,7 @@ public class ItemFragment extends Fragment {
                     mItem.saveItem(getContext());
                 }
 
-                Intent itemListIntent = new Intent(getActivity(), ItemListActivity.class);
-                UUID collectionId = ActivityLogin.mCurrentUser.getCollectionByName(mItem.getItemCollectionName()).getCollectionId();
-                itemListIntent.putExtra("collectionId", collectionId);
-                startActivity(itemListIntent);
+                getActivity().finish();
             }
         });
 
