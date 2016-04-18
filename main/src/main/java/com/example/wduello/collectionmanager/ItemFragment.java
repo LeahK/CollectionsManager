@@ -180,10 +180,7 @@ public class ItemFragment extends Fragment {
 
                 mItem.saveItem();
 
-                Intent itemListIntent = new Intent(getActivity(), ItemListActivity.class);
-                UUID collectionId = ActivityLogin.mCurrentUser.getCollectionByName(mItem.getItemCollectionName()).getCollectionId();
-                itemListIntent.putExtra("collectionId", collectionId);
-                startActivity(itemListIntent);
+                getActivity().finish();
             }
         });
 
