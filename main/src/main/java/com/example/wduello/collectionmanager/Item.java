@@ -1,5 +1,8 @@
 package com.example.wduello.collectionmanager;
 
+import android.content.Context;
+import android.widget.Toast;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
@@ -133,20 +136,35 @@ public class Item implements Serializable {
         return itemToFind;
     }
 
+    public void updateItem(String oldItemName, Context context){
+        Collection myCollection = ActivityLogin.mCurrentUser.getCollection(miCollectionName);
+
+        HashMap<String, Item> items = myCollection.getItems();
+        items.remove(oldItemName);
+
+        if (!items.containsKey(mItemName)) {
+            items.put(mItemName, this);
+        } else {
+            Toast.makeText(context, "Item couldn't be saved, item by this name already exists.", Toast.LENGTH_LONG).show();
+        }
+
+        myCollection.saveCollection();
+
+    }
+
     /*
     *   Saves this Item to local storage and the database.
      */
-    public void saveItem() {
+    public void saveItem(Context context) {
         // save to local
         Collection myCollection = ActivityLogin.mCurrentUser.getCollection(miCollectionName);
 
-        if (myCollection == null){
-            myCollection = new Collection("ItemsWithoutCollection");
-            miCollectionName = myCollection.getCollectionName();
-        }
-
         HashMap<String, Item> items = myCollection.getItems();
-        items.put(mItemName, this);
+        if (!items.containsKey(this.getItemName())) {
+            items.put(mItemName, this);
+        } else {
+            Toast.makeText(context, "Item couldn't be saved, item by this name already exists.", Toast.LENGTH_LONG).show();
+        }
         myCollection.setItems(items);
 
         // save to database

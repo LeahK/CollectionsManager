@@ -51,15 +51,8 @@ public class ItemListFragment extends ListFragment {
 
 
         //Get collection based on collection ID
-        ArrayList<Collection> collections = ActivityLogin.mCurrentUser.getCollectionsArrayList();
-        for (Collection c: collections) {
-            if (c.getCollectionId() != null) {
-                if (c.getCollectionId().equals(collectionId)) {
-                    mCurrentCollection = c;
-                    break;
-                }
-            }
-        }
+        mCurrentCollection = Collection.findCollectionById(collectionId);
+
         //Get items in collection.  If null, create a new list
         mItems = mCurrentCollection.getItemsArrayList();
         if (mItems == null) {

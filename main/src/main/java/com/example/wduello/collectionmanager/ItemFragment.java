@@ -28,6 +28,7 @@ import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.UUID;
 
 public class ItemFragment extends Fragment {
@@ -137,13 +138,6 @@ public class ItemFragment extends Fragment {
         });
 
         mAdvertisedCheckBox = (CheckBox)v.findViewById(R.id.item_advertised);
-        mAdvertisedCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                mItem.setAdvertised(isChecked);
-            }
-        });
-
 
         mPhotoView = (ImageView) v.findViewById(R.id.item_image);
 
@@ -155,13 +149,27 @@ public class ItemFragment extends Fragment {
         });
 
         mDeleteButton = (FloatingActionButton)v.findViewById(R.id.fab_delete_item);
-        mDeleteButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //ItemList.get(getActivity()).deleteItem(mItem);
-                getActivity().finish();
-            }
-        });
+        if (mItem != null) {
+            mDeleteButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Collection collection = ActivityLogin.mCurrentUser.getCollectionByName(mItem.getItemCollectionName());
+
+                    HashMap<String, Item> items = collection.getItems();
+                    items.remove(mItem.getItemName());
+                    collection.setItems(items);
+                    collection.saveCollection();
+
+                    Intent itemListIntent = new Intent(getActivity(), ItemListActivity.class);
+                    UUID collectionId = collection.getCollectionId();
+                    itemListIntent.putExtra("collectionId", collectionId);
+                    startActivity(itemListIntent);
+                }
+            });
+        } else {
+            mDeleteButton.hide();
+        }
+
 
         mSaveItemButton = (Button) v.findViewById(R.id.save_item_button);
         mSaveItemButton.setOnClickListener(new View.OnClickListener() {
@@ -170,16 +178,27 @@ public class ItemFragment extends Fragment {
 
                 boolean isAdvertised = mAdvertisedCheckBox.isChecked();
                 String itemName = mNameField.getText().toString();
+                String oldItemName = "";
+
+                if (mItem != null){
+                    oldItemName = mItem.getItemName();
+                }
 
                 if (mItem == null){
                     mItem = new Item();
+                    mItem.setItemCollectionName("ItemsWithoutCollection");
                 }
                 mItem.setId(UUID.randomUUID());
                 mItem.setItemName(itemName);
                 mItem.setPhotoPath(mCurrentPhotoPath);
                 mItem.setAdvertised(isAdvertised);
 
-                mItem.saveItem();
+                // update the item if it isn't new, otherwise save the item
+                if (!oldItemName.isEmpty()){
+                    mItem.updateItem(oldItemName, getContext());
+                } else {
+                    mItem.saveItem(getContext());
+                }
 
                 Intent itemListIntent = new Intent(getActivity(), ItemListActivity.class);
                 UUID collectionId = ActivityLogin.mCurrentUser.getCollectionByName(mItem.getItemCollectionName()).getCollectionId();
