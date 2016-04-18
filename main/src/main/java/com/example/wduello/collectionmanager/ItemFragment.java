@@ -76,7 +76,7 @@ public class ItemFragment extends Fragment {
         return image;
     }
 
-    public void capturePhoto() {
+    private void capturePhoto() {
         Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         if (cameraIntent.resolveActivity(getActivity().getPackageManager()) != null) {
             File photoFile = null;
@@ -92,7 +92,7 @@ public class ItemFragment extends Fragment {
         }
     }
 
-    public void setPhoto() {
+    private void setPhoto() {
         File photoFile = new File (mCurrentPhotoPath);
         //Uri photoUri = Uri.fromFile(photoFile);
         if (photoFile.exists()) {

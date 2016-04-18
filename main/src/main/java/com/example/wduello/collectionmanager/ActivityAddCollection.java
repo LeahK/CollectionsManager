@@ -4,9 +4,13 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.media.Image;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -43,6 +47,10 @@ public class ActivityAddCollection extends AppCompatActivity
     //*************************
     // Variables
     //*************************
+    private static final String TAG = "AddCollection";
+
+    private ImageView mPhotoView;
+    private String mCurrentPhotoPath;
 
     // this ArrayList will store the field ids
     private ArrayList<Integer> mCollectionsThumbIds = new ArrayList<Integer>();
@@ -68,6 +76,7 @@ public class ActivityAddCollection extends AppCompatActivity
 
         // create the collection thumbnail image
         ImageView collectionThumbnail = (ImageView) findViewById(R.id.collectionThumbnail);
+        mPhotoView = (ImageView) findViewById(R.id.collectionThumbnail);
 
         // create the camera button - used to switch to camera service
         ImageButton useCamera = (ImageButton) findViewById(R.id.takePictureButton);
@@ -130,6 +139,7 @@ public class ActivityAddCollection extends AppCompatActivity
                 CharSequence collectionNameText = collectionName.getText();
 
                 Collection createdCollection = new Collection(collectionNameText.toString());
+                createdCollection.setPhotoPath(mCurrentPhotoPath);
 
                 // then save the collection
                 createdCollection.saveCollection();
@@ -158,7 +168,8 @@ public class ActivityAddCollection extends AppCompatActivity
             @Override
             public void onClick(View v) {
                 // when you click the camera button, it should open camera service
-                dispatchTakePictureIntent();
+                //dispatchTakePictureIntent();
+                capturePhoto();
             }
         });
 
@@ -185,6 +196,46 @@ public class ActivityAddCollection extends AppCompatActivity
 
     static final int REQUEST_IMAGE_CAPTURE = 1;
 
+    private File createImageFile() throws IOException {
+        //Create an image file name
+        String timeStamp = new SimpleDateFormat("yyMMdd_HHmmss").format(new Date());
+        String imageFileName = "JPEG_" + timeStamp + "_";
+        File storageDir = Environment.getExternalStoragePublicDirectory(
+                Environment.DIRECTORY_PICTURES);
+        File image = File.createTempFile(imageFileName, ".jpg", storageDir);
+        //Save a file: path for use with ACTION_VIEW intents
+        //mCurrentPhotoPath = "file:" + image.getAbsolutePath();
+        mCurrentPhotoPath = image.getAbsolutePath();
+        return image;
+    }
+
+    public void capturePhoto() {
+        Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        if (cameraIntent.resolveActivity(getPackageManager()) != null) {
+            File photoFile = null;
+            try {
+                photoFile = createImageFile();
+            } catch (IOException ex) {
+                Log.e(TAG, "Error creating image file,", ex);
+            }
+            if (photoFile != null) {
+                cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(photoFile));
+                startActivityForResult(cameraIntent, REQUEST_IMAGE_CAPTURE);
+            }
+        }
+    }
+
+    private void setPhoto(ImageView iv) {
+        File photoFile = new File (mCurrentPhotoPath);
+        //Uri photoUri = Uri.fromFile(photoFile);
+        if (photoFile.exists()) {
+            Bitmap bitmap = BitmapFactory.decodeFile(photoFile.getAbsolutePath());
+            //mPhotoView = (ImageView)v.findViewById(R.id.item_image);
+            iv.setImageBitmap(bitmap);
+            //c.setPhotoPath(mCurrentPhotoPath);
+        }
+    }
+
     private void dispatchTakePictureIntent() {
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
@@ -194,6 +245,12 @@ public class ActivityAddCollection extends AppCompatActivity
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        Log.d(TAG, "OnActivityResult()");
+        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == Activity.RESULT_OK) {
+            setPhoto(mPhotoView);
+        }
+        /*
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
             Bundle extras = data.getExtras();
             Bitmap imageBitmap = (Bitmap) extras.get("data");
@@ -214,13 +271,16 @@ public class ActivityAddCollection extends AppCompatActivity
                 e.printStackTrace();
             }
 
+            setPhoto(iv);
+
             //Save a file: path for use with ACTION_VIEW intents
             //mCurrentPhotoPath = "file:" + image.getAbsolutePath();
-            String mCurrentPhotoPath = image.getAbsolutePath();
+            //String mCurrentPhotoPath = image.getAbsolutePath();
 
             // save the photo path to the collection
             // collection.setPhotoPath(mCurrentPhotoPath);
-        }
+            */
+
     }
 
     //*************************
