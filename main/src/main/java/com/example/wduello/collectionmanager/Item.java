@@ -17,13 +17,14 @@ import java.util.UUID;
 /**
  *  Created by Justin Gregorio.
  */
-public class Item extends Collection implements Serializable {
+public class Item implements Serializable {
 
     private UUID mId;
     private HashMap<String, Attribute> mAttributes;
     private String mPhotoPath;
     protected String mItemName;
     private boolean mAdvertised;
+    private String miCollectionName;    // the items collection reference
 
     // empty constructor for deserialization
     protected  Item() {
@@ -34,12 +35,13 @@ public class Item extends Collection implements Serializable {
         mItemName = name;
         mPhotoPath = photoPath;
         mId = UUID.randomUUID();
+        miCollectionName = collection.getCollectionName();
     }
 
     public void listenForAttributeChanges(){
 
         String attributeRefUrl = "https://collectionsapp.firebaseio.com/users/"
-                + ActivityLogin.mCurrentUser.getUserName() + "/collections/" + mCollectionName + "/" + mItemName + "/attributes/";
+                + ActivityLogin.mCurrentUser.getUserName() + "/collections/" + miCollectionName + "/" + mItemName + "/attributes/";
         Firebase attributeRef = new Firebase(attributeRefUrl);
         attributeRef.addValueEventListener(new ValueEventListener() {
             @Override
@@ -106,15 +108,41 @@ public class Item extends Collection implements Serializable {
 
     public void setId(UUID id) { mId = id;}
 
+    public String getItemCollectionName(){
+        return miCollectionName;
+    }
+
+    public void setItemCollectionName(String collectionName){
+        miCollectionName = collectionName;
+    }
+
+    public static Item findItemById(UUID itemId){
+        Item itemToFind = null;
+
+        ArrayList<Collection> collections = ActivityLogin.mCurrentUser.getCollectionsArrayList();
+
+        for (Collection c : collections){
+            ArrayList<Item> items = c.getItemsArrayList();
+            for (Item i : items){
+                if (i.getId().equals(itemId)){
+                    itemToFind = i;
+                }
+            }
+        }
+
+        return itemToFind;
+    }
+
     /*
     *   Saves this Item to local storage and the database.
      */
     public void saveItem() {
         // save to local
-        Collection myCollection = ActivityLogin.mCurrentUser.getCollection(mCollectionName);
+        Collection myCollection = ActivityLogin.mCurrentUser.getCollection(miCollectionName);
 
         if (myCollection == null){
             myCollection = new Collection("ItemsWithoutCollection");
+            miCollectionName = myCollection.getCollectionName();
         }
 
         HashMap<String, Item> items = myCollection.getItems();
@@ -137,6 +165,8 @@ public class Item extends Collection implements Serializable {
                 }
             }
         });
+
+        myCollection.saveCollection();
     }
 
     /*

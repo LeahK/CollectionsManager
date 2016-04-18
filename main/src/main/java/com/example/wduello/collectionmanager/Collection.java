@@ -1,6 +1,7 @@
 package com.example.wduello.collectionmanager;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
@@ -15,6 +16,7 @@ import java.util.UUID;
 /**
  * Created by kayewrobleski on 3/6/16.
  */
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Collection implements Serializable {
 
     private HashMap<String, Item> mItems;
@@ -108,6 +110,19 @@ public class Collection implements Serializable {
         }
 
         return collectionWithId;
+    }
+
+    public Item findItemById(UUID itemID){
+        ArrayList<Item> items = this.getItemsArrayList();
+        Item itemSearchedFor = null;
+
+        for (Item item : items){
+            if (item.getId().equals(itemID)){
+                itemSearchedFor = item;
+            }
+        }
+
+        return itemSearchedFor;
     }
 
     /*

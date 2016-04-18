@@ -50,8 +50,8 @@ public class Attribute extends Item implements Serializable {
         String userCollectionRef = "https://collectionsapp.firebaseio.com/users/"
                 + ActivityLogin.mCurrentUser.getUserName() + "/collections/";
         Firebase collectionRef = new Firebase(userCollectionRef);
-        Firebase attributeRef = collectionRef.child(mCollectionName).child(mItemName).child("attributes").child(mAttributeName);
-        attributeRef.setValue(this, new Firebase.CompletionListener() {
+        //Firebase attributeRef = collectionRef.child().child(mItemName).child("attributes").child(mAttributeName);
+        /*attributeRef.setValue(this, new Firebase.CompletionListener() {
             @Override
             public void onComplete(FirebaseError firebaseError, Firebase firebase) {
                 if (firebaseError != null) {
@@ -61,6 +61,7 @@ public class Attribute extends Item implements Serializable {
                 }
             }
         });
+        */
     }
 
 }

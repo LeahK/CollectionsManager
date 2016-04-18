@@ -35,6 +35,7 @@ public class ItemFragment extends Fragment {
     private static final String TAG = "ItemFragment";
     public static final String EXTRA_ITEM_ID = "com.example.wduello.collectionsmanager.item_id";
     public static final int REQUEST_IMAGE_CAPTURE = 1;
+    private static final String ITEM_COLLECTION_NAME = "col name";
 
     //Private members
     private Item mItem;
@@ -44,7 +45,6 @@ public class ItemFragment extends Fragment {
     private String mCurrentPhotoPath;
     private FloatingActionButton mDeleteButton;
     private Button mSaveItemButton;
-    private int mCollectionId;
 
     private OnFragmentInteractionListener mListener;
 
@@ -106,8 +106,8 @@ public class ItemFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //UUID itemId = (UUID) getArguments().getSerializable(EXTRA_ITEM_ID);
-        //mItem = ItemList.get(getActivity()).getItem(itemId);
+        UUID itemId = (UUID) getArguments().getSerializable(EXTRA_ITEM_ID);
+        mItem = Item.findItemById(itemId);
 
     }
 
@@ -122,7 +122,6 @@ public class ItemFragment extends Fragment {
             @Override
             public void onTextChanged(
                     CharSequence c, int start, int before, int count) {
-                mItem.setItemName(c.toString());
             }
 
             @Override
@@ -182,9 +181,22 @@ public class ItemFragment extends Fragment {
 
                 mItem.saveItem();
 
-
+                Intent itemListIntent = new Intent(getActivity(), ItemListActivity.class);
+                UUID collectionId = ActivityLogin.mCurrentUser.getCollectionByName(mItem.getItemCollectionName()).getCollectionId();
+                itemListIntent.putExtra("collectionId", collectionId);
+                startActivity(itemListIntent);
             }
         });
+
+        // load from defaults if they exist
+        if (mItem != null){
+            mNameField.setText(mItem.getItemName());
+            mAdvertisedCheckBox.setChecked(mItem.isAdvertised());
+            mCurrentPhotoPath = mItem.getPhotoPath();
+            if (mCurrentPhotoPath != null){
+                setPhoto();
+            }
+        }
 
         return v;
     }

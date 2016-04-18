@@ -102,6 +102,16 @@ public class User implements Serializable {
         this.mCollections = mCollections;
     }
 
+    public Collection getCollectionByName(String colName){
+        Collection searchedForCollection = null;
+
+        if (mCollections.containsKey(colName)){
+            searchedForCollection = this.mCollections.get(colName);
+        }
+
+        return searchedForCollection;
+    }
+
     public String getUserName() {
         return mUserName;
     }
