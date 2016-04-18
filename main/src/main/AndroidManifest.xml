@@ -17,7 +17,7 @@
         android:theme="@style/AppTheme">
         <activity
             android:name=".ActivityCollections"
-            android:label="@string/app_name"
+            android:label="Collection Manager"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
@@ -27,7 +27,7 @@
         </activity>
         <activity
             android:name=".ActivityAdvertisements"
-            android:label="@string/app_name"
+            android:label="Advertisements"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
@@ -46,7 +46,8 @@
         </activity>
         <activity
             android:name=".ActivityAddCollection"
-            android:label="@string/title_activity_add_collection"
+            android:windowSoftInputMode="adjustNothing"
+            android:label="Add Collection"
             android:theme="@style/AppTheme.NoActionBar"></activity>
         <activity android:name=".ItemListActivity"
                   android:label="@string/title_activity_item"
