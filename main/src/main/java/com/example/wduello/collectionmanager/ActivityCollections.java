@@ -36,14 +36,11 @@ import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.UUID;
 
-public class ActivityCollections extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+public class ActivityCollections extends AppCompatActivity {
 
     //*************************
     // VARIABLES
     //*************************
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -61,15 +58,6 @@ public class ActivityCollections extends AppCompatActivity
 
             }
         });
-
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.setDrawerListener(toggle);
-        toggle.syncState();
-
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
 
         //*************************
         // Collections/Items GRIDVIEW
@@ -199,61 +187,6 @@ public class ActivityCollections extends AppCompatActivity
 
     @Override
     public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START);
-        } else {
-            super.onBackPressed();
-        }
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main_collections_page, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
-    @SuppressWarnings("StatementWithEmptyBody")
-    @Override
-    public boolean onNavigationItemSelected(MenuItem item) {
-        // Handle navigation view item clicks here.
-        int id = item.getItemId();
-
-        if (id == R.id.nav_collections) {
-            // @TODO --> placeholder for new intent ... redirect to myCollections page
-            Toast.makeText(ActivityCollections.this, "MY COLLECTIONS!", Toast.LENGTH_SHORT).show();
-        } else if (id == R.id.nav_advertisements) {
-            // @TODO --> placeholder for new intent ... redirect to myAdvertisements page
-            Intent mainAdvertisementsPage = new Intent(this, ActivityAdvertisements.class);
-
-            Toast.makeText(ActivityCollections.this, "MY ADVERTISEMENTS!", Toast.LENGTH_SHORT).show();
-            startActivity(mainAdvertisementsPage);
-        } else if (id == R.id.nav_soldItems) {
-// @TODO --> placeholder for new intent ... redirect to mySoldItems page
-            Toast.makeText(ActivityCollections.this, "MY SOLD ITEMS!", Toast.LENGTH_SHORT).show();
-        } else if (id == R.id.nav_search) {
-// @TODO --> placeholder for new intent ... redirect to search page
-            Toast.makeText(ActivityCollections.this, "SEARCH!", Toast.LENGTH_SHORT).show();
-        }
-
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.START);
-        return true;
+        this.finish();
     }
 }

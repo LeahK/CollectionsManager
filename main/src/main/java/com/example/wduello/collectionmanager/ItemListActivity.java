@@ -27,9 +27,18 @@ public class ItemListActivity extends SingleFragmentActivity {
     @Override
     public void onBackPressed() {
 
+        //!!!!!!!!!!!!
+        // Very slow code. Why this choice?
+        //!!!!!!!!!!!!
+
         // if back button was pressed restart the collections activity
-        Intent i = new Intent(this, ActivityCollections.class);
-        startActivity(i);
+//        Intent i = new Intent(this, ActivityCollections.class);
+//        startActivity(i);
+
+        //!!!!!!!!!!!
+        // Much faster code.
+        //!!!!!!!!!!!
+        super.onBackPressed();
     }
 
 

@@ -37,7 +37,8 @@
         </activity>
         <activity
             android:name=".ActivityLogin"
-            android:label="@string/title_activity_login">
+            android:label="@string/title_activity_login"
+            android:noHistory="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -50,13 +51,13 @@
             android:label="Add Collection"
             android:theme="@style/AppTheme.NoActionBar"></activity>
         <activity android:name=".ItemListActivity"
-                  android:label="@string/title_activity_item"
+                  android:label="Items"
                   android:theme="@style/AppTheme.NoActionBar">
         </activity>
 
         <activity
             android:name=".ItemActivity"
-            android:label="@string/title_activity_item"
+            android:label="Items"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
     </application>

@@ -23,7 +23,6 @@ public class UserUnitTest {
         mCollections.put("Test Collection", mCollection);
         mUser.setCollections(mCollections);
         assertTrue(mUser.getCollections().containsKey("Test Collection"));
-
     }
 
     @Test

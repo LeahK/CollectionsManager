@@ -127,9 +127,6 @@ public class ItemListFragment extends ListFragment {
             TextView nameTextView = (TextView) convertView.findViewById(R.id.custom_list_item_nameTextView);
             nameTextView.setText(item.getItemName());
 
-            CheckBox advertisedCheckBox = (CheckBox) convertView.findViewById(R.id.custom_list_item_advertisedCheckBox);
-            advertisedCheckBox.setChecked(item.isAdvertised());
-
             return convertView;
         }
     }

@@ -10,6 +10,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
@@ -95,18 +96,27 @@ public class ActivityAddCollection extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 // get the collectionName
-                CharSequence collectionNameText = collectionName.getText();
+                String collectionNameText = collectionName.getText().toString();
 
-                Collection createdCollection = new Collection(collectionNameText.toString());
-                createdCollection.setPhotoPath(mCurrentPhotoPath);
+                if (TextUtils.isEmpty(collectionNameText)){
+                    collectionName.setError("Please enter a name for your collection.");
+                }
+                if (mCurrentPhotoPath == null || mCurrentPhotoPath.equals("")){
+                    Toast.makeText(getApplicationContext(), "Take a picture for your collection by clicking the camera button.", Toast.LENGTH_LONG).show();
+                }
+                else{
+                    Collection createdCollection = new Collection(collectionNameText.toString());
+                    createdCollection.setPhotoPath(mCurrentPhotoPath);
 
-                // then save the collection
-                createdCollection.saveCollection();
+                    // then save the collection
 
-                // redirect to myAdvertisements page
-                Intent mainCollectionsPage = new Intent(ActivityAddCollection.this, ActivityCollections.class);
-                startActivity(mainCollectionsPage);
+                    createdCollection.saveCollection();
 
+                    // redirect to main page
+                    Intent mainCollectionsPage = new Intent(ActivityAddCollection.this, ActivityCollections.class);
+                    startActivity(mainCollectionsPage);
+                    ActivityAddCollection.this.finish();
+                }
             }
         });
 
